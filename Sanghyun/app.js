@@ -1,14 +1,14 @@
-// const http = require("http");
+
 
 require("dotenv").config()
 
-const express = require("express") // require 메소드를 통해서 express 모듈을 임포트하여 객체를 생성하고 express 변수가 참조하도록 하는 행위 
+const express = require("express") 
 const cors = require("cors"); 
 const morgan = require("morgan");
 
 const { DataSource } = require('typeorm');
 
-const appDataSource = new DataSource({ //변수명 바꾸기.... 다른 rdbms도 사용할 수 있음, 보다 재사용, 유지보수를 위해 
+const appDataSource = new DataSource({
     type: process.env.DB_CONNECTION,
     host: process.env.DB_HOST,
     port: process.env.DB_PORT,
@@ -19,18 +19,18 @@ const appDataSource = new DataSource({ //변수명 바꾸기.... 다른 rdbms도
 
 
 appDataSource.initialize()
-    .then(() => { //올바른 db에 연결되었을 경우 
+    .then(() => {  
         console.log("Data Source has been initialized!");
     })
     .catch((err)=>{
-        console.error("Error during Data Source initialization", err) //에러처리
+        console.error("Error during Data Source initialization", err) 
         appDataSource.destroy();
 
     })
     
-app = express() //express() 함수를 호출하고, app이라는 변수안에 담는 행위 
+const app = express() 
 
-//middleware 
+
 app.use(cors());
 app.use(morgan('dev'));
 app.use(express.json());
@@ -38,6 +38,8 @@ app.use(express.json());
 app.get("/ping", (req, res) => {
     res.status(200).json({message : 'pong'});
 });
+
+
 
 const PORT = process.env.PORT
 
