@@ -30,8 +30,27 @@ app.use(express.json());
 app.use(cors());
 app.use(morgan("dev"));
 
+//health check
 app.get("/ping", cors(), function (req, res, next) {
-  res.json({ message: "pong" });
+  res.status(200).json({ message: "pong" });
+});
+
+// 유저 회원 가입하기
+app.post("/users", async (req, res) => {
+  const { id, first_name, last_name, age, email } = req.body;
+
+  await appDataSource.query(
+    `INSERT INTO users(
+		    id,
+        first_name,
+        last_name,
+        age,
+        email
+		) VALUES (?, ?, ?, ?, ?);
+		`,
+    [id, first_name, last_name, age, email]
+  );
+  res.status(201).json({ message: "userCreated" });
 });
 
 const PORT = process.env.PORT;
