@@ -48,6 +48,20 @@ app.post('/users', async (req, res) => {
   res.status(201).json({ message: 'userCreated' });
 });
 
+app.patch('/posts/:userId/:postId/', async (req, res) => {
+  const { userId, postId } = req.params;
+  const { postingTitle, postingContent } = req.body;
+  await appDataSource.query(
+    `UPDATE 
+
+    
+
+    SET
+    WHERE`,
+    [userId, postId, postingTitle, postingContent]
+  );
+});
+
 app.listen(PORT, () => {
   console.log(`Server is listening on port ${PORT}`);
 });
