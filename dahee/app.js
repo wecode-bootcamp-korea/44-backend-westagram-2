@@ -77,6 +77,26 @@ app.get('/posts', async (req, res) => {
   );
 });
 
+app.get('/users/:userId', async (req, res) => {
+  const { userId } = req.params;
+  await appDataSource.query(
+    `SELECT
+      u.id userId,
+      u.profile_image userProfileImage,
+      pj.postings
+    FROM users u
+    JOIN 
+      (SELECT user_id, JSON_ARRAYAGG(JSON_OBJECT("postingId", id, "postingImageUrl", image_url, "postingContent", content)) postings
+      FROM posts p
+      GROUP BY id) pj
+    ON u.id = pj.user_id
+    WHERE u.id = ${userId};`,
+    (err, rows) => {
+      res.status(200).json(rows);
+    }
+  );
+});
+
 app.listen(PORT, () => {
   console.log(`Server is listening on port ${PORT}`);
 });
