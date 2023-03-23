@@ -1,6 +1,9 @@
 # Created by https://www.toptal.com/developers/gitignore/api/macos,node,visualstudiocode,vim,zsh
 # Edit at https://www.toptal.com/developers/gitignore?templates=macos,node,visualstudiocode,vim,zsh
 
+.prettierrc
+settings.json
+
 ### macOS ###
 # General
 .DS_Store
