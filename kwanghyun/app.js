@@ -51,20 +51,26 @@ app.get("/posts/list", async (req, res) => {
   );
 });
 app.get("/user/posts", async (req, res) => {
-  await appDataSource.query(
+  const { userId } = req.body;
+  const rows = await appDataSource.query(
     `SELECT
               users.id as userId,
               users.profile_image as userProfileImage,
-              posts.user_id as postingId,
-              posts.content as postingContent
-              FROM users 
-              INNER JOIN posts 
+              (SELECT JSON_ARRAYAGG(
+                JSON_OBJECT(
+                  "postingId", posts.id, 
+                  "postingContent", posts.content
+                  )
+                )) as postings
+              FROM posts
+              INNER JOIN users
               ON users.id = posts.user_id
+              WHERE posts.user_id = ?
+              GROUP BY posts.user_id
               `,
-    (err, rows) => {
-      res.status(200).json(rows);
-    }
+    [userId]
   );
+  res.status(200).json({ data: rows });
 });
 
 app.post("/posts", async (req, res) => {
