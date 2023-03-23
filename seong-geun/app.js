@@ -53,6 +53,42 @@ app.post("/users", async (req, res) => {
   res.status(201).json({ message: "userCreated" });
 });
 
+// 게시글 등록하기
+app.post("/posts", async (req, res) => {
+  const { id, title, postContent, postImage } = req.body;
+
+  await appDataSource.query(
+    `INSERT INTO posts(
+		    id,
+        title,
+        postContent,
+        postImage
+      
+		) VALUES (?, ?, ?, ?);
+		`,
+    [id, title, postContent, postImage]
+  );
+  res.status(201).json({ message: "postCreated" });
+});
+
+// 전체 게시글 조회하기
+app.get("/e_posts", async (req, res) => {
+  await appDataSource.query(
+    `SELECT
+		    users.id,
+        users.last_name,
+        posts.postImage,
+        posts.postContent
+		FROM users ba
+    INNER JOIN users ON ba.id = users.id
+    INNER JOIN posts ON ba. id = posts.id
+		`,
+    (err, rows) => {
+      res.status(201).json(rows);
+    }
+  );
+});
+
 const PORT = process.env.PORT;
 
 const start = async () => {
