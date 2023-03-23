@@ -33,21 +33,6 @@ app.get('/ping', (req, res) => {
   res.status(200).json({ message: 'pong' });
 });
 
-// Assgnmnt2. 회원가입
-app.post('/users', async (req, res) => {
-  const { name, email, password, profileImage } = req.body;
-  await appDataSource.query(
-    `INSERT INTO users (
-      name,
-      email,
-      password,
-      profile_image
-    ) VALUES (?, ?, ?, ?)`,
-    [name, email, password, profileImage]
-  );
-  res.status(201).json({ message: 'userCreated' });
-});
-
 const PORT = process.env.PORT;
 
 app.listen(PORT, () => {
