@@ -1,7 +1,7 @@
 # Created by https://www.toptal.com/developers/gitignore/api/macos,node,visualstudiocode,vim,zsh
 # Edit at https://www.toptal.com/developers/gitignore?templates=macos,node,visualstudiocode,vim,zsh
 
-./db/schema.sql
+db/schema.sql
 
 .prettierrc
 settings.json
