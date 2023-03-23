@@ -1,10 +1,8 @@
-const http = require("http");
 const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
 
-const dotenv = require("dotenv");
-dotenv.config();
+require("dotenv").config();
 
 const { DataSource } = require("typeorm");
 
@@ -36,11 +34,10 @@ app.get("/ping", cors(), function (req, res, next) {
   res.json({ message: "pong" });
 });
 
-const server = http.createServer(app);
 const PORT = process.env.PORT;
 
 const start = async () => {
-  server.listen(PORT, () => console.log(`server is listening on ${PORT}`));
+  app.listen(PORT, () => console.log(`server is listening on ${PORT}`));
 };
 
 start();
