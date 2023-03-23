@@ -8,7 +8,7 @@ dotenv.config();
 
 const { DataSource } = require("typeorm");
 
-const myDataSource = new DataSource({
+const appDataSource = new DataSource({
   type: process.env.DB_CONNECTION,
   host: process.env.DB_HOST,
   port: process.env.DB_PORT,
@@ -17,9 +17,14 @@ const myDataSource = new DataSource({
   database: process.env.DB_DATABASE,
 });
 
-myDataSource.initialize().then(() => {
-  console.log("Data Sourece has been initialized!");
-});
+appDataSource
+  .initialize()
+  .then(() => {
+    console.log("Data Sourece has been initialized!");
+  })
+  .catch((error) => {
+    console.log("Alert Error. Need modify!", error);
+  });
 
 const app = express();
 
@@ -39,7 +44,3 @@ const start = async () => {
 };
 
 start();
-
-// app.listen(3000, function () {
-//   console.log("server listening on port 3000");
-// });
