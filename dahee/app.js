@@ -61,6 +61,22 @@ app.post('/posts', async (req, res) => {
   res.status(201).json({ message: 'postCreated' });
 });
 
+app.get('/posts', async (req, res) => {
+  await appDataSource.query(
+    `SELECT
+      u.id userId,
+      u.profile_image userProfileImage,
+      p.id postingId,
+      p.image_url postingImageUrl,
+      p.content postingContent
+    FROM posts p
+    JOIN users u ON p.user_id = u.id`,
+    (err, rows) => {
+      res.status(200).json({ data: rows });
+    }
+  );
+});
+
 app.listen(PORT, () => {
   console.log(`Server is listening on port ${PORT}`);
 });
