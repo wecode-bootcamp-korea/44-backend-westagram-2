@@ -43,7 +43,7 @@ app.post('/users', async (req, res) => {
       password,
       profile_image
     ) VALUES (?, ?, ?, ?)`,
-    [ name, email, password, profileImage ]
+    [name, email, password, profileImage]
   );
   res.status(201).json({ message: 'userCreated' });
 });
