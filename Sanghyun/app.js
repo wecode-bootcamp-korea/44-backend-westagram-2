@@ -29,7 +29,6 @@ appDataSource.initialize()
     
 const app = express(); 
 
-//middleware 
 app.use(cors());
 app.use(morgan('dev'));
 app.use(express.json());
@@ -38,9 +37,8 @@ app.get("/ping", (req, res) => {
     res.status(200).json({message : 'pong'});
 });
 
-//create users
 app.post("/users", async (req, res, next)=>{
-    const {user_name, email, profile_image, user_password} = req.body
+    const {userName, email, profileImage, userPassword} = req.body
 
     await  appDataSource.query( 
         `INSERT INTO users(
@@ -50,7 +48,7 @@ app.post("/users", async (req, res, next)=>{
           user_password     
         ) VALUES (?, ?, ?, ?);
      `,
-     [user_name, email, profile_image, user_password]  
+     [userName, email, profileImage, userPassword]  
     )        
 
     res.status(201).json({message: "Usercreated"});
