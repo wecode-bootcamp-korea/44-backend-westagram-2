@@ -50,15 +50,31 @@ app.post('/users', async (req, res) => {
 
 app.patch('/posts/:userId/:postId/', async (req, res) => {
   const { userId, postId } = req.params;
-  const { postingTitle, postingContent } = req.body;
+  const { title, content } = req.body;
   await appDataSource.query(
-    `UPDATE 
-
-    
-
+    `UPDATE posts   
     SET
-    WHERE`,
-    [userId, postId, postingTitle, postingContent]
+      title = ?,
+      content = ? 
+    WHERE user_id = ${userId} AND id = ${postId};`,
+    [title, content]
+  );
+
+  //어떻게 보여줄까
+  appDataSource.query(
+    `SELECT 
+      p.user_id userId,
+      u.name userName,
+      p.id postingId
+      p.title postingTitle,
+      p.content postingContent
+
+      FROM posts p
+      JOIN users u ON p.user_id = u.id
+      WHERE user_id = ${userId} AND id = ${postId}`,
+    (err, rows) => {
+      res.status(200).json(rows);
+    }
   );
 });
 
