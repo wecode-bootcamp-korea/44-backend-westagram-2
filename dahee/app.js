@@ -60,22 +60,18 @@ app.patch('/posts/:userId/:postId/', async (req, res) => {
     [title, content]
   );
 
-  //어떻게 보여줄까
-  appDataSource.query(
+  const updatedPost = await appDataSource.query(
     `SELECT 
-      p.user_id userId,
-      u.name userName,
-      p.id postingId
-      p.title postingTitle,
-      p.content postingContent
-
+        p.user_id userId,
+        u.name userName,
+        p.id postingId,
+        p.title postingTitle,
+        p.content postingContent
       FROM posts p
       JOIN users u ON p.user_id = u.id
-      WHERE user_id = ${userId} AND id = ${postId}`,
-    (err, rows) => {
-      res.status(200).json(rows);
-    }
+      WHERE p.user_id = ${userId} AND p.id = ${postId}`
   );
+  res.status(200).json({ updatedPost });
 });
 
 app.listen(PORT, () => {
