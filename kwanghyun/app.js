@@ -35,7 +35,7 @@ app.get("/ping", (req, res) => {
   return res.status(200).json({ message: "pong" });
 });
 app.get("/posts/list", async (req, res) => {
-  await appDataSource.query(
+  const rows = await appDataSource.query(
     `SELECT 
             users.id as userId,
             users.profile_image as userProfileImage,
@@ -44,11 +44,9 @@ app.get("/posts/list", async (req, res) => {
             FROM users 
             LEFT JOIN posts 
             ON users.id = posts.user_id
-            `,
-    (err, rows) => {
-      res.status(200).json({ data: rows });
-    }
+            `
   );
+  res.status(200).json({ data: rows });
 });
 app.get("/user/posts", async (req, res) => {
   const { userId } = req.body;
