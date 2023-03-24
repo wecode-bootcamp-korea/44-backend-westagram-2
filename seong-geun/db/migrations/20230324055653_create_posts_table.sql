@@ -1,0 +1,12 @@
+-- migrate:up
+CREATE TABLE posts (
+    postingId VARCHAR(100) NOT NULL  PRIMARY KEY,
+    title VARCHAR(1000) NOT NULL,
+    postingImageUrl VARCHAR(1000) NULL,
+    postingContent VARCHAR(2000) NULL
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- migrate:down
+DROP TABLE posts;
