@@ -51,6 +51,35 @@ app.post("/users", async (req, res) => {
   res.status(201).json({ message: "userCreated" });
 });
 
+app.patch("/user/post/modify", async (req, res) => {
+  const { userId, postId, contentUpdate } = req.body;
+  // const { contentUpdate } = req.body;
+  const rows = await appDataSource.query(
+    `UPDATE
+          posts 
+          SET content=?
+          WHERE users.id=? AND posts.id=?
+          `,
+    [contentUpdate, userId, postId]
+  );
+  res.status(201).json({ data: rows });
+  // const rows = await appDataSource.query(
+  //   `SELECT
+  //         users.id as userId,
+  //         users.name as userName,
+  //         posts.user_id as postingId,
+  //         posts.title as postingTitle,
+  //         posts.content as postingContent
+  //         FROM users
+  //         JOIN posts
+  //         ON users.id = posts.id
+  //         WHERE users.id = ?
+  //         `,
+  //   [userId]
+  // );
+  // res.status(201).json({ data: rows });
+});
+
 const PORT = process.env.PORT;
 
 const start = async () => {
