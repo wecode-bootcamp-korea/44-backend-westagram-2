@@ -54,12 +54,14 @@ app.get("/user/posts", async (req, res) => {
     `SELECT
               users.id as userId,
               users.profile_image as userProfileImage,
-              (SELECT JSON_ARRAYAGG(
+              (
+                SELECT  JSON_ARRAYAGG(
                 JSON_OBJECT(
                   "postingId", posts.id, 
                   "postingContent", posts.content
                   )
-                )) as postings
+                )
+                ) as postings
               FROM posts
               INNER JOIN users
               ON users.id = posts.user_id
@@ -114,7 +116,7 @@ app.post("/likes", async (req, res) => {
   res.status(201).json({ message: "likeCreated" });
 });
 
-app.patch("/user/post/modify", async (req, res) => {
+app.patch("/user/post", async (req, res) => {
   const { postId, contentUpdate } = req.body;
   await appDataSource.query(
     `UPDATE
@@ -135,10 +137,10 @@ app.patch("/user/post/modify", async (req, res) => {
             ON users.id = posts.user_id
             `
   );
-  res.status(201).json({ data: data });
+  res.status(200).json({ data: data });
 });
 
-app.delete("/posts/delete", async (req, res) => {
+app.delete("/posts", async (req, res) => {
   const { contentDelete } = req.body;
   await appDataSource.query(
     `DELETE 
