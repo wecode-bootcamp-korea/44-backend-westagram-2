@@ -134,14 +134,17 @@ app.get("/postings/:userId", async (req, res) => {
 
 
 
-  app.put("patch/", async (res, req) =>{
-    const {userId, password} = req.body;
-    const {postId, title, content, postingImageUrl} =req.body;
-       
+  app.put("patch/", async (req, res) =>{
+    const {userId, password, postId, title, content, postingImageUrl} = req.body;
+   
+    console.log(userId)
+    console.log(password)
+
     const user = await appDataSource.query(
       `SELECT * FROM users WHERE id = ? AND user_password = ?`,
       [userId, password]
     );
+   
   
     if (user.length === 0) {
       return res.status(404).json({ message: "user not found" });
@@ -152,11 +155,9 @@ app.get("/postings/:userId", async (req, res) => {
       [postId, userId]
     );
 
-    if(user.length ===0){
+    if(post.length ===0){
       return res.status(404).json({ message: "post not found" });
     }
-
-
 
     await appDataSource.query(
       `
@@ -194,8 +195,7 @@ app.get("/postings/:userId", async (req, res) => {
 
 
   app.delete("/delete", async (req, res) => {
-    const {userId, password} = req.body;
-    const {postId} =req.body;
+    const {userId, password, postId} = req.body;
 
     const user = await appDataSource.query(
       `SELECT * FROM users WHERE id = ? AND user_password = ?`,
@@ -217,13 +217,14 @@ app.get("/postings/:userId", async (req, res) => {
 
     await appDataSource.query(
       `
+        DELETE
+
+        FROM posts AS p
+
+        WHERE p.id = ? 
       `,
       [postId]
     )
-
-
-
-    return res.status(404).json({ message: "User not found" });
 
     return res.status(200).json({ message: "postingDeleted"}); 
 
@@ -231,10 +232,32 @@ app.get("/postings/:userId", async (req, res) => {
 
 
 
-  app.put("like", async (req, resq) => {
+  app.post("like", async (req, resq) => {
+    const {userId, password} = req.body;
+    const {postId} =req.body;
+
+    const user = await appDataSource.query(
+      `SELECT * FROM users WHERE id = ? AND user_password = ?`,
+      [userId, password]
+    );
+  
+    if (user.length === 0) {
+      return res.status(404).json({ message: "user not found" });
+    }
+
+    const post = await appDataSource.query(
+      `SELECT * FROM posts WHERE id = ?`,
+      [postId]
+    );
+    
+    
 
 
+    
+    // 한번 입력되면 좋아요,  좋아요 등록된 상태에서 다시 post 하면 원래 있던 행 삭제     
 
+
+     
 
   });
 
