@@ -41,15 +41,16 @@ app.post("/users", async (req, res) => {
 
   await appDataSource.query(
     `INSERT INTO users(
-		    id,
-        profile_image,
-        username,
-        age,
-        email
-		  ) VALUES (?, ?, ?, ?, ?);
-		`,
+      id,
+      profile_image,
+      username,
+      age,
+      email
+		) VALUES (?, ?, ?, ?, ?);
+	`,
     [id, profile_image, username, age, email]
   );
+
   res.status(201).json({ message: "userCreated" });
 });
 
