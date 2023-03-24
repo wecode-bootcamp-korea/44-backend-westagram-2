@@ -101,6 +101,52 @@ app.get('/users/:userId', async (req, res) => {
   res.status(200).json({ data });
 });
 
+app.patch('/posts/:userId/:postId/', async (req, res) => {
+  const { userId, postId } = req.params;
+  const { title, content } = req.body;
+  await appDataSource.query(
+    `UPDATE posts   
+    SET
+      title = ?,
+      content = ? 
+    WHERE user_id = ${userId} AND id = ${postId};`,
+    [title, content]
+  );
+
+  const updatedPost = await appDataSource.query(
+    `SELECT 
+        p.user_id userId,
+        u.name userName,
+        p.id postingId,
+        p.title postingTitle,
+        p.content postingContent
+      FROM posts p
+      JOIN users u ON p.user_id = u.id
+      WHERE p.user_id = ${userId} AND p.id = ${postId}`
+  );
+  res.status(200).json({ updatedPost });
+});
+
+app.delete('/posts/:postId', async (req, res) => {
+  const { postId } = req.params;
+  await appDataSource.query(
+    `DELETE FROM posts
+    WHERE posts.id = ${postId}`
+  );
+  res.status(204).json({ message: 'postingDeleted' });
+});
+
+app.post('/likes/:userId/:postId', async (req, res) => {
+  const { userId, postId } = req.params;
+  const like = await appDataSource.query(
+    `INSERT INTO likes (
+      user_id, 
+      post_id
+    ) VALUES ( ${userId}, ${postId} )`
+  );
+  res.status(201).json({ message: 'likeCreated' });
+});
+
 app.listen(PORT, () => {
   console.log(`Server is listening on port ${PORT}`);
 });
