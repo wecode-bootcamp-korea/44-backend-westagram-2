@@ -42,8 +42,8 @@ app.post("/users", async (req, res) => {
   await appDataSource.query(
     `INSERT INTO users(
 		    id,
-        userProfileImage,
-        userName,
+        profile_image,
+        username,
         age,
         email
 		) VALUES (?, ?, ?, ?, ?);
@@ -53,20 +53,22 @@ app.post("/users", async (req, res) => {
   res.status(201).json({ message: "userCreated" });
 });
 
-// 게시글 등록하기
+// 게시글 등록하기 api
 app.post("/posts", async (req, res) => {
-  const { postingId, title, postingImageUrl, postingContent } = req.body;
+  const { postingId, title, postingImageUrl, postingContent, userId } =
+    req.body;
 
   await appDataSource.query(
     `INSERT INTO posts(
-		    postingId,
+		    id,
         title,
-        postingImageUrl,
-        postingContent
+        posting_image_url,
+        posting_content,
+        user_id
       
-		) VALUES (?, ?, ?, ?);
+		) VALUES (?, ?, ?, ?, ?);
 		`,
-    [postingId, title, postingImageUrl, postingContent]
+    [postingId, title, postingImageUrl, postingContent, userId]
   );
   res.status(201).json({ message: "postCreated" });
 });
@@ -76,17 +78,44 @@ app.get("/e_posts", async (req, res) => {
   await appDataSource.query(
     `SELECT
 		    users.id,
-        users.last_name,
-        posts.postImage,
-        posts.postContent
+        users.profile_image,
+        posts.id,
+        posts.posting_image_url,
+        posts.posting_content
+
 		FROM users ba
     INNER JOIN users ON ba.id = users.id
-    INNER JOIN posts ON ba. id = posts.id
+    INNER JOIN posts ON ba.id = posts.id
 		`,
     (err, rows) => {
-      res.status(201).json(rows);
+      res.status(200).json(rows);
     }
   );
+});
+
+// 유저의 게시글 조회하기
+app.get("/u_posts", async (req, res) => {
+  const { userId } = req.body;
+
+  const userspost = await appDataSource.query(
+    `SELECT
+		  users.id as userID,
+      users.profile_image as userProfileimage,
+      JSON_ARRAYAGG(
+          JSON_OBJECT(
+           "postingId", posts.user_id,
+           "postingImageUrl", posts.posting_image_url,
+           "postingContent", posts.posting_content
+            ) 
+       )as postings
+		  FROM users
+      JOIN posts
+      ON users.id = posts.user_id
+      WHERE users.id = ?
+   `,
+    [userId]
+  );
+  res.status(200).json({ data: userspost });
 });
 
 const PORT = process.env.PORT;
