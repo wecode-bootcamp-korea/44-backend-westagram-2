@@ -38,8 +38,8 @@ app.get("/ping", (req, res) => {
 
 
 
-function findUser (userId, password, postId){
-    const user =  appDataSource.query(
+async function findMatched (userId, password, postId){
+    const user = await appDataSource.query(
         `SELECT * FROM users WHERE id = ? AND user_password = ?`,
         [userId, password]
       );
@@ -48,11 +48,11 @@ function findUser (userId, password, postId){
         return res.status(404).json({ message: "user not found" });
       }
 
-      const post =  appDataSource.query(
+      const post = await appDataSource.query(
         `SELECT * FROM posts WHERE id = ?`,
         [postId]
       );
-  
+      console.log(post)   
       if(post.length ===0){
         return res.status(404).json({ message: "post not found" });
       }
@@ -189,24 +189,7 @@ app.get("/postings/:userId", async (req, res) => {
       }
     
 
-    const user = await appDataSource.query(
-      `SELECT * FROM users WHERE id = ? AND user_password = ?`,
-      [userId, password]
-    );
-   
-  
-    if (user.length === 0) {
-      return res.status(404).json({ message: "user not found" });
-    }
-
-    const post = await appDataSource.query(
-      `SELECT * FROM posts WHERE id = ? AND user_id = ?`,
-      [postId, userId]
-    );
-
-    if(post.length ===0){
-      return res.status(404).json({ message: "post not found" });
-    }
+    findMatched(userId, password, postId)
 
     await appDataSource.query(
       `
@@ -256,25 +239,25 @@ app.get("/postings/:userId", async (req, res) => {
         return res.status(400).json({message: "key error"})
       }
     
+    
+      const user = await appDataSource.query(
+        `SELECT * FROM users WHERE id = ? AND user_password = ?`,
+        [userId, password]
+      );
+    
+      if (user.length === 0) {
+        return res.status(404).json({ message: "user not found" });
+      }
 
+      const post = await appDataSource.query(
+        `SELECT * FROM posts WHERE id = ?`,
+        [postId]
+      );
+      console.log(post)   
+      if(post.length ===0){
+        return res.status(404).json({ message: "post not found" });
+      }
 
-    const user = await appDataSource.query(
-      `SELECT * FROM users WHERE id = ? AND user_password = ?`,
-      [userId, password]
-    );
-  
-    if (user.length === 0) {
-      return res.status(404).json({ message: "user not found" });
-    }
-
-    const post = await appDataSource.query(
-      `SELECT * FROM posts WHERE id = ?`,
-      [postId]
-    );
-
-    if(post.length ===0){
-      return res.status(404).json({ message: "post not found" });
-    }
 
     await appDataSource.query(
       `
@@ -301,20 +284,8 @@ app.get("/postings/:userId", async (req, res) => {
         return res.status(400).json({message: "key error"})
       }
     
-
-    const user = await appDataSource.query(
-      `SELECT * FROM users WHERE id = ? AND user_password = ?`,
-      [userId, password]
-    );
-  
-    if (user.length === 0) {
-      return res.status(404).json({ message: "user not found" });
-    }
-
-    const post = await appDataSource.query(
-      `SELECT * FROM posts WHERE id = ?`,
-      [postId]
-    );
+    
+    findMatched(userId, password, postId)  
     
     if (post.length === 0) {
         return res.status(404).json({ message: "post not found" });
