@@ -83,6 +83,18 @@ app.delete('/posts/:postId', async (req, res) => {
   res.status(204).json({ message: 'postingDeleted' });
 });
 
+//좋아요 누르기 -  sql FK - users 추가하기
+app.post('/likes/:userId/:postId', async (req, res) => {
+  const { userId, postId } = req.params;
+  const like = await appDataSource.query(
+    `INSERT INTO likes (
+      user_id, 
+      post_id
+    ) VALUES ( ${userId}, ${postId} )`
+  );
+  res.status(201).json({ message: 'likeCreated' });
+});
+
 app.listen(PORT, () => {
   console.log(`Server is listening on port ${PORT}`);
 });
