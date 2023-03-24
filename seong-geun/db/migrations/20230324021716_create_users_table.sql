@@ -1,8 +1,8 @@
 -- migrate:up
 CREATE TABLE users (
-    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    first_name VARCHAR(1000) NOT NULL,
-    last_name VARCHAR(1000) NOT NULL,
+    userId VARCHAR(100) NOT NULL PRIMARY KEY,
+    userProfileImage varchar(1000) NULL,
+    userName VARCHAR(100),
     age INT NULL,
     email VARCHAR(1000) NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
