@@ -43,7 +43,7 @@ CREATE TABLE `likes` (
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  KEY `user_id` (`user_id`),
+  UNIQUE KEY `user_id` (`user_id`,`post_id`),
   KEY `post_id` (`post_id`),
   CONSTRAINT `likes_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
   CONSTRAINT `likes_ibfk_2` FOREIGN KEY (`post_id`) REFERENCES `posts` (`id`)
@@ -125,5 +125,6 @@ INSERT INTO `schema_migrations` (version) VALUES
   ('20230322052311'),
   ('20230322052321'),
   ('20230322132256'),
-  ('20230323111817');
+  ('20230323111817'),
+  ('20230324054748');
 UNLOCK TABLES;

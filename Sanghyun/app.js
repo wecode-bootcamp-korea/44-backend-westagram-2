@@ -214,7 +214,7 @@ app.get("/postings/:userId", async (req, res) => {
       [postId]
     );
 
-    if(user.length ===0){
+    if(post.length ===0){
       return res.status(404).json({ message: "post not found" });
     }
 
@@ -235,7 +235,7 @@ app.get("/postings/:userId", async (req, res) => {
 
 
 
-  app.post("like", async (req, res) => {
+  app.post("/likes", async (req, res) => {
     const {userId, password, postId} = req.body;
 
     const user = await appDataSource.query(
@@ -253,15 +253,44 @@ app.get("/postings/:userId", async (req, res) => {
     );
     
     if (post.length === 0) {
-        return res.status(404).json({ message: "user not found" });
-      }
+        return res.status(404).json({ message: "post not found" });
+    }
   
+
+
+    const likes = await appDataSource.query(
+        `SELECT * FROM likes WHERE user_id =? AND post_id =?`,
+        [userId, postId]
+    )
+
+    console.log(likes);
     
 
+    if(likes.length ===0 ){ 
+        await appDataSource.query( 
+            `INSERT INTO likes( 
+                user_id,
+                post_id
+                 ) VALUES (?, ?);
+              `,
+              [userId, postId]
+        )
 
-    
-    // 한번 입력되면 좋아요,  좋아요 등록된 상태에서 다시 post 하면 원래 있던 행 삭제     
+        return res.status(200).json({message: "likesCreated"})
 
+    } else { 
+         await appDataSource.query( 
+            `
+              DELETE
+      
+              FROM likes 
+      
+              WHERE user_id = ? AND post_id = ?
+            `,
+            [userId, postId]
+          )
+          return res.status(200).json({message: "likesDeleted"})    
+    };
 
      
 
