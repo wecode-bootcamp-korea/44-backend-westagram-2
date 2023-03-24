@@ -50,34 +50,53 @@ app.post("/users", async (req, res) => {
   );
   res.status(201).json({ message: "userCreated" });
 });
+app.post("/likes", async (req, res) => {
+  const { user_id, post_id } = req.body;
+  await appDataSource.query(
+    `INSERT INTO likes(
+        user_id,
+        post_id
+      ) VALUES (?, ?)
+      `,
+    [user_id, post_id]
+  );
+  res.status(201).json({ message: "likeCreated" });
+});
 
 app.patch("/user/post/modify", async (req, res) => {
-  const { userId, postId, contentUpdate } = req.body;
-  // const { contentUpdate } = req.body;
-  const rows = await appDataSource.query(
+  const { postId, contentUpdate } = req.body;
+  await appDataSource.query(
     `UPDATE
           posts 
           SET content=?
-          WHERE users.id=? AND posts.id=?
+          WHERE posts.user_id=?
           `,
-    [contentUpdate, userId, postId]
+    [contentUpdate, postId]
   );
-  res.status(201).json({ data: rows });
-  // const rows = await appDataSource.query(
-  //   `SELECT
-  //         users.id as userId,
-  //         users.name as userName,
-  //         posts.user_id as postingId,
-  //         posts.title as postingTitle,
-  //         posts.content as postingContent
-  //         FROM users
-  //         JOIN posts
-  //         ON users.id = posts.id
-  //         WHERE users.id = ?
-  //         `,
-  //   [userId]
-  // );
-  // res.status(201).json({ data: rows });
+  const data = await appDataSource.query(
+    `SELECT 
+            users.id as userId,
+            users.profile_image as userProfileImage,
+            posts.user_id as postingId,
+            posts.content as postingContent
+            FROM users 
+            LEFT JOIN posts 
+            ON users.id = posts.user_id
+            `
+  );
+  res.status(201).json({ data: data });
+});
+
+app.delete("/posts/delete", async (req, res) => {
+  const { contentDelete } = req.body;
+  await appDataSource.query(
+    `DELETE 
+            FROM posts
+            WHERE posts.id = ?
+    `,
+    [contentDelete]
+  );
+  res.status(200).json({ message: "postingDeleted" });
 });
 
 const PORT = process.env.PORT;
