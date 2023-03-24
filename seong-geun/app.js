@@ -37,18 +37,18 @@ app.get("/ping", cors(), function (req, res, next) {
 
 // 유저 회원 가입하기
 app.post("/users", async (req, res) => {
-  const { userId, userProfileImage, userName, age, email } = req.body;
+  const { id, profile_image, username, age, email } = req.body;
 
   await appDataSource.query(
     `INSERT INTO users(
-		    userId,
-        userProfileImage,
-        userName,
+		    id,
+        profile_image,
+        username,
         age,
         email
-		) VALUES (?, ?, ?, ?, ?);
+		  ) VALUES (?, ?, ?, ?, ?);
 		`,
-    [userId, userProfileImage, userName, age, email]
+    [id, profile_image, username, age, email]
   );
   res.status(201).json({ message: "userCreated" });
 });
