@@ -5,6 +5,7 @@ const cors = require("cors");
 const morgan = require("morgan");
 
 const { DataSource } = require("typeorm");
+const { json } = require("body-parser");
 
 const appDataSource = new DataSource({
   type: process.env.DB_CONNECTION,
@@ -35,8 +36,44 @@ app.get("/ping", (req, res) => {
   res.status(200).json({ message: "pong" });
 });
 
+
+
+function findUser (userId, password, postId){
+    const user =  appDataSource.query(
+        `SELECT * FROM users WHERE id = ? AND user_password = ?`,
+        [userId, password]
+      );
+    
+      if (user.length === 0) {
+        return res.status(404).json({ message: "user not found" });
+      }
+
+      const post =  appDataSource.query(
+        `SELECT * FROM posts WHERE id = ?`,
+        [postId]
+      );
+  
+      if(post.length ===0){
+        return res.status(404).json({ message: "post not found" });
+      }
+
+}
+
+
+
+
+
+
+
+
+
+
 app.post("/users", async (req, res, next) => {
   const { userName, email, profileImage, userPassword } = req.body;
+
+  if(!userName || !email || !profileImage|| !userPassword){
+    return res.status(400).json({message: "key error"})
+  }
 
   await appDataSource.query(
     `INSERT INTO users(
@@ -54,6 +91,11 @@ app.post("/users", async (req, res, next) => {
 
 app.post("/posts", async (req, res, next) => {
   const { title, content, userId, postingImageUrl } = req.body;
+  // keyerror 만들기 
+  if(!title || !content || !userId|| !postingImageUrl){
+    return res.status(400).json({message: "key error"})
+  }
+
 
   await appDataSource.query(
     `INSERT INTO posts(
@@ -93,8 +135,13 @@ app.get("/lists", async (req, res, next) => {
 
 
 
+
 app.get("/postings/:userId", async (req, res) => {
     const { userId } = req.params;
+    
+    if(!userId){
+        return res.status(400).json({message: "key error"})
+      }
     
         const user = await appDataSource.query(
             "SELECT * FROM users WHERE id = ?",
@@ -137,6 +184,11 @@ app.get("/postings/:userId", async (req, res) => {
   app.put("/patch", async (req, res) =>{
     const {userId, password, postId, title, content, postingImageUrl} = req.body;
 
+    if(!userId || !password || !postId|| !title || !content || !postingImageUrl){
+        return res.status(400).json({message: "key error"})
+      }
+    
+
     const user = await appDataSource.query(
       `SELECT * FROM users WHERE id = ? AND user_password = ?`,
       [userId, password]
@@ -174,9 +226,9 @@ app.get("/postings/:userId", async (req, res) => {
       `SELECT  
         JSON_ARRAYAGG(
             JSON_OBJECT(
-              "userId", p.id,
+              "userId", u.id,
                 "userName", p.posting_image_url,
-                "postingId" , p.content,
+                "postingId" , p.id,
                 "postingTitle", p.title,
                 "postingContent", p.content
               )
@@ -199,6 +251,12 @@ app.get("/postings/:userId", async (req, res) => {
 
   app.delete("/delete", async (req, res) => {
     const {userId, password, postId} = req.body;
+
+    if(!userId || !password || !postId){
+        return res.status(400).json({message: "key error"})
+      }
+    
+
 
     const user = await appDataSource.query(
       `SELECT * FROM users WHERE id = ? AND user_password = ?`,
@@ -229,7 +287,7 @@ app.get("/postings/:userId", async (req, res) => {
       [postId]
     )
 
-    return res.status(200).json({ message: "postingDeleted"}); 
+    return res.status(201).json({ message: "postingDeleted"}); 
 
   });
 
@@ -237,6 +295,12 @@ app.get("/postings/:userId", async (req, res) => {
 
   app.post("/likes", async (req, res) => {
     const {userId, password, postId} = req.body;
+
+
+    if(!userId || !password || !postId){
+        return res.status(400).json({message: "key error"})
+      }
+    
 
     const user = await appDataSource.query(
       `SELECT * FROM users WHERE id = ? AND user_password = ?`,
@@ -276,7 +340,7 @@ app.get("/postings/:userId", async (req, res) => {
               [userId, postId]
         )
 
-        return res.status(200).json({message: "likesCreated"})
+        return res.status(201).json({message: "likesCreated"})
 
     } else { 
          await appDataSource.query( 
@@ -289,7 +353,7 @@ app.get("/postings/:userId", async (req, res) => {
             `,
             [userId, postId]
           )
-          return res.status(200).json({message: "likesDeleted"})    
+          return res.status(201).json({message: "likesDeleted"})    
     };
 
      
