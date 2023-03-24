@@ -2,7 +2,7 @@
 CREATE TABLE users (
     userId VARCHAR(100) NOT NULL PRIMARY KEY,
     userProfileImage varchar(1000) NULL,
-    userName VARCHAR(100),
+    userName VARCHAR(100) NOT NULL,
     age INT NULL,
     email VARCHAR(1000) NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
