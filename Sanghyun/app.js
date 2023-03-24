@@ -134,14 +134,11 @@ app.get("/postings/:userId", async (req, res) => {
 
 
 
-  app.put("patch/", async (req, res) =>{
+  app.put("/patch", async (req, res) =>{
     const {userId, password, postId, title, content, postingImageUrl} = req.body;
-   
-    console.log(userId)
-    console.log(password)
 
     const user = await appDataSource.query(
-      `SELECT * FROM users WHERE users.id = ? AND users.user_password = ?`,
+      `SELECT * FROM users WHERE id = ? AND user_password = ?`,
       [userId, password]
     );
    
@@ -151,7 +148,7 @@ app.get("/postings/:userId", async (req, res) => {
     }
 
     const post = await appDataSource.query(
-      `SELECT * FROM posts WHERE posts.id = ? AND posts.user_id = ?`,
+      `SELECT * FROM posts WHERE id = ? AND user_id = ?`,
       [postId, userId]
     );
 
@@ -161,11 +158,11 @@ app.get("/postings/:userId", async (req, res) => {
 
     await appDataSource.query(
       `
-      UPATDE posts 
+      UPDATE posts 
       SET 
-        title =?
-        content = ?
-        posting_image_url =?
+        title = ?,
+        content = ?,
+        posting_image_url = ?
       WHERE posts.id =? 
       
       `,
@@ -173,23 +170,29 @@ app.get("/postings/:userId", async (req, res) => {
 
     );
     
-    const patchedData = appDataSource.query(
+    const patchedData = await appDataSource.query(
       `SELECT  
-        u.id AS userId,
-        u.user_name AS userName,
-        u.profile_image AS userProfileImage,
-        p.id AS postingId,
-        p.posting_image_url AS postingImageUrl,
-        p.content AS postingContent  
-
-        FROM users AS u
-        JOIN posts AS p
-        ON p.id =? 
+        JSON_ARRAYAGG(
+            JSON_OBJECT(
+              "userId", p.id,
+                "userName", p.posting_image_url,
+                "postingId" , p.content,
+                "postingTitle", p.title,
+                "postingContent", p.content
+              )
+          ) AS patchedData    
+        FROM 
+          users AS u            
+          JOIN posts AS p
+           ON  p.user_id = u.id         
+        WHERE p.id =? 
         `,
       [postId]
     );
     
-    return res.status(200).json({ data: `${patchedData} patched done`});    
+
+    res.status(200).json({ message: "patched done", data: (patchedData) });
+    
 
   });
 
@@ -232,9 +235,8 @@ app.get("/postings/:userId", async (req, res) => {
 
 
 
-  app.post("like", async (req, resq) => {
-    const {userId, password} = req.body;
-    const {postId} =req.body;
+  app.post("like", async (req, res) => {
+    const {userId, password, postId} = req.body;
 
     const user = await appDataSource.query(
       `SELECT * FROM users WHERE id = ? AND user_password = ?`,
@@ -250,6 +252,10 @@ app.get("/postings/:userId", async (req, res) => {
       [postId]
     );
     
+    if (post.length === 0) {
+        return res.status(404).json({ message: "user not found" });
+      }
+  
     
 
 
