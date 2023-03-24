@@ -63,6 +63,7 @@ CREATE TABLE `posts` (
   `user_id` int NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `posting_image_url` varchar(1000) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `posts_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
@@ -123,5 +124,6 @@ INSERT INTO `schema_migrations` (version) VALUES
   ('20230322052304'),
   ('20230322052311'),
   ('20230322052321'),
-  ('20230322132256');
+  ('20230322132256'),
+  ('20230323111817');
 UNLOCK TABLES;
