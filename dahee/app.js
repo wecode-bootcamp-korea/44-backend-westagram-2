@@ -50,7 +50,7 @@ app.post('/users', async (req, res) => {
 
 app.post('/posts', async (req, res) => {
   const { title, content, userId } = req.body;
-  await appDataSource.query(
+  const insert = await appDataSource.query(
     `INSERT INTO posts (
       title,
       content,
@@ -62,7 +62,7 @@ app.post('/posts', async (req, res) => {
 });
 
 app.get('/posts', async (req, res) => {
-  await appDataSource.query(
+  const data = await appDataSource.query(
     `SELECT
       u.id userId,
       u.profile_image userProfileImage,
@@ -70,31 +70,35 @@ app.get('/posts', async (req, res) => {
       p.image_url postingImageUrl,
       p.content postingContent
     FROM posts p
-    JOIN users u ON p.user_id = u.id`,
-    (err, rows) => {
-      res.status(200).json({ data: rows });
-    }
+    JOIN users u ON p.user_id = u.id`
   );
+  res.status(200).json({ data });
 });
 
 app.get('/users/:userId', async (req, res) => {
   const { userId } = req.params;
-  await appDataSource.query(
+  const data = await appDataSource.query(
     `SELECT
       u.id userId,
       u.profile_image userProfileImage,
       pj.postings
     FROM users u
     JOIN 
-      (SELECT user_id, JSON_ARRAYAGG(JSON_OBJECT("postingId", id, "postingImageUrl", image_url, "postingContent", content)) postings
+      (SELECT 
+        user_id, 
+        JSON_ARRAYAGG(
+          JSON_OBJECT(
+            "postingId", id, 
+            "postingImageUrl", image_url, 
+            "postingContent", content
+            )
+          ) postings
       FROM posts p
       GROUP BY id) pj
     ON u.id = pj.user_id
-    WHERE u.id = ${userId};`,
-    (err, rows) => {
-      res.status(200).json(rows);
-    }
+    WHERE u.id = ${userId};`
   );
+  res.status(200).json({ data });
 });
 
 app.listen(PORT, () => {
