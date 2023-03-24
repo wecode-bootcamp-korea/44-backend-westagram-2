@@ -116,6 +116,21 @@ app.get("/u_posts", async (req, res) => {
     [userId]
   );
   res.status(200).json({ data: userspost });
+  const { id, profile_image, username, age, email } = req.body;
+
+  await appDataSource.query(
+    `INSERT INTO users(
+      id,
+      profile_image,
+      username,
+      age,
+      email
+		) VALUES (?, ?, ?, ?, ?);
+	`,
+    [id, profile_image, username, age, email]
+  );
+
+  res.status(201).json({ message: "userCreated" });
 });
 
 const PORT = process.env.PORT;

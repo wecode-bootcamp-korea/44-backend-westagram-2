@@ -34,6 +34,57 @@ app.use(morgan("dev"));
 app.get("/ping", (req, res) => {
   return res.status(200).json({ message: "pong" });
 });
+app.get("/posts/list", async (req, res) => {
+  const rows = await appDataSource.query(
+    `SELECT 
+            users.id as userId,
+            users.profile_image as userProfileImage,
+            posts.user_id as postingId,
+            posts.content as postingContent
+            FROM users 
+            LEFT JOIN posts 
+            ON users.id = posts.user_id
+            `
+  );
+  res.status(200).json({ data: rows });
+});
+app.get("/user/posts", async (req, res) => {
+  const { userId } = req.body;
+  const rows = await appDataSource.query(
+    `SELECT
+              users.id as userId,
+              users.profile_image as userProfileImage,
+              (SELECT JSON_ARRAYAGG(
+                JSON_OBJECT(
+                  "postingId", posts.id, 
+                  "postingContent", posts.content
+                  )
+                )) as postings
+              FROM posts
+              INNER JOIN users
+              ON users.id = posts.user_id
+              WHERE posts.user_id = ?
+              GROUP BY posts.user_id
+              `,
+    [userId]
+  );
+  res.status(200).json({ data: rows });
+});
+
+app.post("/posts", async (req, res) => {
+  const { title, content, user_id } = req.body;
+
+  await appDataSource.query(
+    `INSERT INTO posts(
+            title,
+            content,
+            user_id
+    ) VALUES (?,?,?);
+    `,
+    [title, content, user_id]
+  );
+  res.status(201).json({ message: "postCreated" });
+});
 
 app.post("/users", async (req, res) => {
   const { name, email, profileImage, password } = req.body;

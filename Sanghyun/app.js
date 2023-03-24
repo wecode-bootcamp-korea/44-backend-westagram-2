@@ -39,6 +39,22 @@ app.get("/ping", (req, res) => {
     res.status(200).json({message : 'pong'});
 });
 
+app.post("/users", async (req, res, next) => {
+    const { userName, email, profileImage, userPassword } = req.body;
+  
+    await appDataSource.query(
+      `INSERT INTO users(
+            user_name ,
+            email,
+            profile_image,
+            user_password     
+          ) VALUES (?, ?, ?, ?);
+       `,
+      [userName, email, profileImage, userPassword]
+    );
+  
+    res.status(201).json({ message: "usercreated" });
+  });
 
 
 const PORT = process.env.PORT
