@@ -49,7 +49,7 @@ app.post("/users", async (req, res, next) => {
     [userName, email, profileImage, userPassword]
   );
 
-  res.status(201).json({ message: "Usercreated" });
+  res.status(201).json({ message: "usercreated" });
 });
 
 app.post("/posts", async (req, res, next) => {
@@ -66,7 +66,7 @@ app.post("/posts", async (req, res, next) => {
     [title, content, userId, postingImageUrl]
   );
 
-  res.status(201).json({ message: "Postcreated" });
+  res.status(201).json({ message: "postCreated" });
 });
 
 
@@ -102,7 +102,7 @@ app.get("/postings/:userId", async (req, res) => {
           );
         
           if (user.length === 0) {
-            return res.status(404).json({ message: "User not found" });
+            return res.status(404).json({ message: "user not found" });
           }
     
       
@@ -130,6 +130,112 @@ app.get("/postings/:userId", async (req, res) => {
         );
   
     res.status(200).json({ data : postings });
+  });
+
+
+
+  app.put("patch/", async (res, req) =>{
+    const {userId, password} = req.body;
+    const {postId, title, content, postingImageUrl} =req.body;
+       
+    const user = await appDataSource.query(
+      `SELECT * FROM users WHERE id = ? AND user_password = ?`,
+      [userId, password]
+    );
+  
+    if (user.length === 0) {
+      return res.status(404).json({ message: "user not found" });
+    }
+
+    const post = await appDataSource.query(
+      `SELECT * FROM posts WHERE id = ? AND user_id = ?`,
+      [postId, userId]
+    );
+
+    if(user.length ===0){
+      return res.status(404).json({ message: "post not found" });
+    }
+
+
+
+    await appDataSource.query(
+      `
+      UPATDE posts 
+      SET 
+        title =?
+        content = ?
+        posting_image_url =?
+      WHERE id =? 
+      
+      `,
+       [title, content, postingImageUrl, postId] 
+
+    );
+    
+    const patchedData = appDataSource.query(
+      `SELECT  
+        u.id AS userId,
+        u.user_name AS userName,
+        u.profile_image AS userProfileImage,
+        p.id AS postingId,
+        p.posting_image_url AS postingImageUrl,
+        p.content AS postingContent  
+
+        FROM users AS u
+        JOIN posts AS p
+        ON p.id =? 
+        `,
+      [postId]
+    );
+    
+    return res.status(200).json({ data: `${patchedData} patched done`});    
+
+  });
+
+
+  app.delete("/delete", async (req, res) => {
+    const {userId, password} = req.body;
+    const {postId} =req.body;
+
+    const user = await appDataSource.query(
+      `SELECT * FROM users WHERE id = ? AND user_password = ?`,
+      [userId, password]
+    );
+  
+    if (user.length === 0) {
+      return res.status(404).json({ message: "user not found" });
+    }
+
+    const post = await appDataSource.query(
+      `SELECT * FROM posts WHERE id = ?`,
+      [postId]
+    );
+
+    if(user.length ===0){
+      return res.status(404).json({ message: "post not found" });
+    }
+
+    await appDataSource.query(
+      `
+      `,
+      [postId]
+    )
+
+
+
+    return res.status(404).json({ message: "User not found" });
+
+    return res.status(200).json({ message: "postingDeleted"}); 
+
+  });
+
+
+
+  app.put("like", async (req, resq) => {
+
+
+
+
   });
 
 
