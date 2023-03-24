@@ -141,7 +141,7 @@ app.get("/postings/:userId", async (req, res) => {
     console.log(password)
 
     const user = await appDataSource.query(
-      `SELECT * FROM users WHERE id = ? AND user_password = ?`,
+      `SELECT * FROM users WHERE users.id = ? AND users.user_password = ?`,
       [userId, password]
     );
    
@@ -151,7 +151,7 @@ app.get("/postings/:userId", async (req, res) => {
     }
 
     const post = await appDataSource.query(
-      `SELECT * FROM posts WHERE id = ? AND user_id = ?`,
+      `SELECT * FROM posts WHERE posts.id = ? AND posts.user_id = ?`,
       [postId, userId]
     );
 
@@ -166,7 +166,7 @@ app.get("/postings/:userId", async (req, res) => {
         title =?
         content = ?
         posting_image_url =?
-      WHERE id =? 
+      WHERE posts.id =? 
       
       `,
        [title, content, postingImageUrl, postId] 
