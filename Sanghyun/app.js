@@ -66,11 +66,11 @@ app.post("/users", async (req, res, next) => {
 
   await appDataSource.query(
     `INSERT INTO users(
-          user_name ,
-          email,
-          profile_image,
-          user_password     
-        ) VALUES (?, ?, ?, ?);
+      user_name ,
+      email,
+      profile_image,
+      user_password     
+    ) VALUES (?, ?, ?, ?);
      `,
     [userName, email, profileImage, userPassword]
   );
@@ -87,11 +87,11 @@ app.post("/posts", async (req, res, next) => {
 
   await appDataSource.query(
     `INSERT INTO posts(
-       title,
-       content,
-       user_id,
-       posting_image_url
-        ) VALUES (?, ?, ?, ?);
+      title,
+      content,
+      user_id,
+      posting_image_url
+    ) VALUES (?, ?, ?, ?);
      `,
     [title, content, userId, postingImageUrl]
   );
@@ -112,9 +112,9 @@ app.get("/lists", async (req, res, next) => {
       p.posting_image_url AS postingImageUrl,
       p.content AS postingContent  
 
-      FROM users AS u
-      JOIN posts AS p
-      ON p.user_id = u.id
+    FROM users AS u
+    JOIN posts AS p
+    ON p.user_id = u.id
       `,
   );
 
@@ -190,13 +190,13 @@ app.get("/postings/:userId", async (req, res) => {
     const patchedData = await appDataSource.query(
       `SELECT  
         JSON_ARRAYAGG(
-            JSON_OBJECT(
-              "userId", u.id,
-                "userName", p.posting_image_url,
-                "postingId" , p.id,
-                "postingTitle", p.title,
-                "postingContent", p.content
-              )
+          JSON_OBJECT(
+            "userId", u.id,
+              "userName", p.posting_image_url,
+              "postingId" , p.id,
+              "postingTitle", p.title,
+              "postingContent", p.content
+            )
           ) AS patchedData    
         FROM 
           users AS u            
