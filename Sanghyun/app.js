@@ -55,13 +55,7 @@ async function findMatched (userId, password, postId){
   if(post.length ===0){
     return res.status(404).json({ message: "post not found" });
   }
-
-
-
 }
-
-
-
 
 app.post("/users", async (req, res, next) => {
   const { userName, email, profileImage, userPassword } = req.body;
@@ -86,11 +80,10 @@ app.post("/users", async (req, res, next) => {
 
 app.post("/posts", async (req, res, next) => {
   const { title, content, userId, postingImageUrl } = req.body;
-  // keyerror 만들기 
+
   if(!title || !content || !userId|| !postingImageUrl){
     return res.status(400).json({message: "key error"})
   }
-
 
   await appDataSource.query(
     `INSERT INTO posts(
@@ -111,70 +104,65 @@ app.get("/lists", async (req, res, next) => {
  
   let lists;
  
-    lists = await appDataSource.query(
-      `SELECT  
-        u.id AS userId,
-        u.profile_image AS userProfileImage,
-        p.id AS postingId,
-        p.posting_image_url AS postingImageUrl,
-        p.content AS postingContent  
+  lists = await appDataSource.query(
+    `SELECT  
+      u.id AS userId,
+      u.profile_image AS userProfileImage,
+      p.id AS postingId,
+      p.posting_image_url AS postingImageUrl,
+      p.content AS postingContent  
 
-        FROM users AS u
-        JOIN posts AS p
-        ON p.user_id = u.id
-        `,
-    );
+      FROM users AS u
+      JOIN posts AS p
+      ON p.user_id = u.id
+      `,
+  );
 
   res.status(200).json({ data: lists });
 });
-
-
-
 
 app.get("/postings/:userId", async (req, res) => {
     const { userId } = req.params;
     
     if(!userId){
-        return res.status(400).json({message: "key error"})
+      return res.status(400).json({message: "key error"})
+    }
+    
+    const user = await appDataSource.query(
+        "SELECT * FROM users WHERE id = ?",
+        [userId]
+      );
+    
+      if (user.length === 0) {
+        return res.status(404).json({ message: "user not found" });
       }
-    
-        const user = await appDataSource.query(
-            "SELECT * FROM users WHERE id = ?",
-            [userId]
-          );
-        
-          if (user.length === 0) {
-            return res.status(404).json({ message: "user not found" });
-          }
-    
-      
-        const postings = await appDataSource.query(
-          `SELECT 
-            u.id AS userId,
-            u.profile_image AS userProfileImage,
-            JSON_ARRAYAGG(
-              JSON_OBJECT(
-                "postingId", p.id,
-	              "postingImageUrl", p.posting_image_url,
-		            "postingContent" , p.content
-                )
-            ) AS postings
-          FROM 
-            users AS u            
-            JOIN posts AS p
-            ON  p.user_id = u.id 
-          WHERE 
-            u.id = ?
-          GROUP BY 
-            u.id
-          `,
-          [userId]
-        );
+
   
+    const postings = await appDataSource.query(
+      `SELECT 
+        u.id AS userId,
+        u.profile_image AS userProfileImage,
+        JSON_ARRAYAGG(
+          JSON_OBJECT(
+            "postingId", p.id,
+            "postingImageUrl", p.posting_image_url,
+            "postingContent" , p.content
+            )
+        ) AS postings
+      FROM 
+        users AS u            
+        JOIN posts AS p
+        ON  p.user_id = u.id 
+      WHERE 
+        u.id = ?
+      GROUP BY 
+        u.id
+      `,
+      [userId]
+    );
+
     res.status(200).json({ data : postings });
   });
-
-
 
   app.put("/patch", async (req, res) =>{
     const {userId, password, postId, title, content, postingImageUrl} = req.body;
@@ -219,10 +207,7 @@ app.get("/postings/:userId", async (req, res) => {
       [postId]
     );
     
-
     res.status(200).json({ message: "patched done", data: (patchedData) });
-    
-
   });
 
 
@@ -231,40 +216,39 @@ app.get("/postings/:userId", async (req, res) => {
 
     if(!userId || !password || !postId){
         return res.status(400).json({message: "key error"})
-      }
-    
-      const user = await appDataSource.query(
-        `SELECT * FROM users WHERE id = ? AND user_password = ?`,
-        [userId, password]
-      );
-    
-      if (user.length === 0) {
-        return res.status(404).json({ message: "user not found" });
-      }
+    }
+  
+    const user = await appDataSource.query(
+      `SELECT * FROM users WHERE id = ? AND user_password = ?`,
+      [userId, password]
+    );
+  
+    if (user.length === 0) {
+      return res.status(404).json({ message: "user not found" });
+    }
 
-      const post = await appDataSource.query(
-        `SELECT * FROM posts WHERE id = ?`,
-        [postId]
-      );
-    
-      if(post.length ===0){
-        return res.status(404).json({ message: "post not found" });
-      }
-
-
-    await appDataSource.query(
-      `
-        DELETE
-
-        FROM posts AS p
-
-        WHERE p.id = ? 
-      `,
+    const post = await appDataSource.query(
+      `SELECT * FROM posts WHERE id = ?`,
       [postId]
-    )
+    );
+  
+    if(post.length ===0){
+      return res.status(404).json({ message: "post not found" });
+    }
 
-    return res.status(201).json({ message: "postingDeleted"}); 
 
+  await appDataSource.query(
+    `
+      DELETE
+
+      FROM posts AS p
+
+      WHERE p.id = ? 
+    `,
+    [postId]
+  )
+
+  return res.status(201).json({ message: "postingDeleted"}); 
   });
 
 
@@ -295,16 +279,11 @@ app.get("/postings/:userId", async (req, res) => {
         return res.status(404).json({ message: "post not found" });
     }
   
-
-
     const likes = await appDataSource.query(
         `SELECT * FROM likes WHERE user_id =? AND post_id =?`,
         [userId, postId]
     )
-
-    console.log(likes);
-    
-
+ 
     if(likes.length ===0 ){ 
         await appDataSource.query( 
             `INSERT INTO likes( 
@@ -330,13 +309,7 @@ app.get("/postings/:userId", async (req, res) => {
           )
           return res.status(201).json({message: "likesDeleted"})    
     };
-
-     
-
   });
-
-
-
 
 const PORT = process.env.PORT;
 
