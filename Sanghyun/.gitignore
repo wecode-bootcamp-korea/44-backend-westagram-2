@@ -394,9 +394,5 @@ $RECYCLE.BIN/
 
 # End of https://www.toptal.com/developers/gitignore/api/windows,linux,node,visualstudiocode,intellij,webstorm
 
-<<<<<<< HEAD
 # Ignore MySQL backup query
 *OLD_CHARACTER_SET_CLIENT*
-=======
-schema.sql
->>>>>>> feature/assignment-3

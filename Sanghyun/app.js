@@ -5,10 +5,7 @@ const cors = require("cors");
 const morgan = require("morgan");
 
 const { DataSource } = require("typeorm");
-<<<<<<< HEAD
 const { json } = require("body-parser");
-=======
->>>>>>> feature/assignment-3
 
 const appDataSource = new DataSource({
   type: process.env.DB_CONNECTION,
@@ -27,7 +24,7 @@ appDataSource
   .catch((err) => {
     console.error("Error during Data Source initialization", err);
     appDataSource.destroy();
-  });
+  }); 
 
 const app = express();
 
@@ -39,7 +36,6 @@ app.get("/ping", (req, res) => {
   res.status(200).json({ message: "pong" });
 });
 
-<<<<<<< HEAD
 
 async function findMatched (userId, password, postId){
   const user = await appDataSource.query(
@@ -75,33 +71,16 @@ app.post("/users", async (req, res, next) => {
       profile_image,
       user_password     
     ) VALUES (?, ?, ?, ?);
-=======
-app.post("/users", async (req, res, next) => {
-  const { userName, email, profileImage, userPassword } = req.body;
-
-  await appDataSource.query(
-    `INSERT INTO users(
-          user_name ,
-          email,
-          profile_image,
-          user_password     
-        ) VALUES (?, ?, ?, ?);
->>>>>>> feature/assignment-3
      `,
     [userName, email, profileImage, userPassword]
   );
 
-<<<<<<< HEAD
   res.status(201).json({ message: "usercreated" });
-=======
-  res.status(201).json({ message: "Usercreated" });
->>>>>>> feature/assignment-3
 });
 
 app.post("/posts", async (req, res, next) => {
   const { title, content, userId, postingImageUrl } = req.body;
 
-<<<<<<< HEAD
   if(!title || !content || !userId|| !postingImageUrl){
     return res.status(400).json({message: "key error"})
   }
@@ -113,24 +92,11 @@ app.post("/posts", async (req, res, next) => {
       user_id,
       posting_image_url
     ) VALUES (?, ?, ?, ?);
-=======
-  await appDataSource.query(
-    `INSERT INTO posts(
-       title,
-       content,
-       user_id,
-       posting_image_url
-        ) VALUES (?, ?, ?, ?);
->>>>>>> feature/assignment-3
      `,
     [title, content, userId, postingImageUrl]
   );
 
-<<<<<<< HEAD
   res.status(201).json({ message: "postCreated" });
-=======
-  res.status(201).json({ message: "Postcreated" });
->>>>>>> feature/assignment-3
 });
 
 
@@ -138,7 +104,6 @@ app.get("/lists", async (req, res, next) => {
  
   let lists;
  
-<<<<<<< HEAD
   lists = await appDataSource.query(
     `SELECT  
       u.id AS userId,
@@ -152,26 +117,10 @@ app.get("/lists", async (req, res, next) => {
     ON p.user_id = u.id
       `,
   );
-=======
-    lists = await appDataSource.query(
-      `SELECT  
-        u.id AS userId,
-        u.profile_image AS userProfileImage,
-        p.id AS postingId,
-        p.posting_image_url AS postingImageUrl,
-        p.content AS postingContent  
-
-        FROM users AS u
-        JOIN posts AS p
-        ON p.user_id = u.id
-        `,
-    );
->>>>>>> feature/assignment-3
 
   res.status(200).json({ data: lists });
 });
 
-<<<<<<< HEAD
 app.get("/postings/:userId", async (req, res) => {
     const { userId } = req.params;
     
@@ -360,51 +309,6 @@ app.get("/postings/:userId", async (req, res) => {
           return res.status(201).json({message: "likesDeleted"})    
     };
   });
-=======
-
-
-app.get("/postings/:userId", async (req, res) => {
-    const { userId } = req.params;
-    
-        const user = await appDataSource.query(
-            "SELECT * FROM users WHERE id = ?",
-            [userId]
-          );
-        
-          if (user.length === 0) {
-            return res.status(404).json({ message: "User not found" });
-          }
-    
-      
-        const postings = await appDataSource.query(
-          `SELECT 
-            u.id AS userId,
-            u.profile_image AS userProfileImage,
-            JSON_ARRAYAGG(
-              JSON_OBJECT(
-                "postingId", p.id,
-	              "postingImageUrl", p.posting_image_url,
-		            "postingContent" , p.content
-                )
-            ) AS postings
-          FROM 
-            users AS u            
-            JOIN posts AS p
-            ON  p.user_id = u.id 
-          WHERE 
-            u.id = ?
-          GROUP BY 
-            u.id
-          `,
-          [userId]
-        );
-  
-    res.status(200).json({ data : postings });
-  });
-
-
-
->>>>>>> feature/assignment-3
 
 const PORT = process.env.PORT;
 
