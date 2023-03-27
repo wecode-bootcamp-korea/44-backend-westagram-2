@@ -137,7 +137,6 @@ app.get("/postings/:userId", async (req, res) => {
         return res.status(404).json({ message: "user not found" });
       }
 
-  
     const postings = await appDataSource.query(
       `SELECT 
         u.id AS userId,
