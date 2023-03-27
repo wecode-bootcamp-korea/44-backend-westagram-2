@@ -84,7 +84,7 @@ app.post("/likes", async (req, res) => {
     `,
     [userId, postId]
   );
-  res.status(200).json({ message: "likeCreated" });
+  return res.status(201).json({ message: "likeCreated" });
 });
 
 // 전체 게시글 조회하기
@@ -134,7 +134,7 @@ app.get("/u_posts", async (req, res) => {
 });
 
 // 게시글 수정하기
-app.patch("/m_posts", async (req, res) => {
+app.patch("/posts", async (req, res) => {
   const { postingUserId, postingContent } = req.body;
   await appDataSource.query(
     `UPDATE
@@ -147,7 +147,7 @@ app.patch("/m_posts", async (req, res) => {
     [postingContent, postingUserId]
   );
 
-  const m_userspost = await appDataSource.query(
+  const userspost = await appDataSource.query(
     `SELECT
         users.id as userId,
         users.username as userName,
@@ -162,12 +162,12 @@ app.patch("/m_posts", async (req, res) => {
     `
   );
 
-  res.status(200).json({ data: m_userspost });
+  return res.status(201).json({ data: userspost });
 });
 
 // 게시글 삭제하기
-app.delete("/posts", async (req, res) => {
-  const { postingId } = req.body;
+app.delete("/posts/:postingId", async (req, res) => {
+  const { postingId } = req.params;
   await appDataSource.query(
     `DELETE
      FROM
@@ -177,7 +177,7 @@ app.delete("/posts", async (req, res) => {
     `,
     [postingId]
   );
-  res.status(200).json({ message: "postingDelete" });
+  res.status(204).send();
 });
 
 const PORT = process.env.PORT;
