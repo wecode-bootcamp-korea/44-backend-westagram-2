@@ -36,7 +36,25 @@ const allPosts = async () => {
   }
 };
 
+const postChange = async (userId, postId, title, content) => {
+  try {
+    return await dataSource.appDataSource.query(
+      `UPDATE posts   
+        SET
+        title = ?,
+        content = ? 
+       WHERE user_id = ? AND id = ?;`,
+      [title, content, userId, postId]
+    );
+  } catch (err) {
+    const error = new Error('INVALID_DATA_INPUT');
+    error.statusCode = 400;
+    throw error;
+  }
+};
+
 module.exports = {
   postUpload,
   allPosts,
+  postChange,
 };

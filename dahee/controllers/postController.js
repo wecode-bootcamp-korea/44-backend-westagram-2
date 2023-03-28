@@ -26,7 +26,25 @@ const getAllPosts = async (req, res) => {
   }
 };
 
+const updatePost = async (req, res) => {
+  try {
+    const { userId, postId } = req.params;
+    const { title, content } = req.body;
+
+    if (!userId || !postId || !title || !content) {
+      return res.status(400).json({ message: 'KEY_ERROR' });
+    }
+
+    await postService.updatePost(userId, postId, title, content);
+    res.status(200).json({ message: 'POST_UPDATED' });
+  } catch (err) {
+    console.log(err);
+    return res.status(err.statusCode || 500).json({ message: err.message });
+  }
+};
+
 module.exports = {
   newPostUp,
   getAllPosts,
+  updatePost,
 };

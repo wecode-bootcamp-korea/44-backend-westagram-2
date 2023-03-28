@@ -10,7 +10,18 @@ const getAllPosts = async () => {
   return allPosts;
 };
 
+const updatePost = async (userId, postId, title, content) => {
+  try {
+    const postChange = await postDao.postChange(userId, postId, title, content);
+    return postChange;
+  } catch (err) {
+    console.log(err);
+    return res.status(err.statusCode || 400).json({ message: err.message });
+  }
+};
+
 module.exports = {
   newPostUp,
   getAllPosts,
+  updatePost,
 };
