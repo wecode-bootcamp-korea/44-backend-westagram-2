@@ -16,7 +16,6 @@ const updatePost = async (userId, postId, title, content) => {
     return postChange;
   } catch (err) {
     console.log(err);
-    return res.status(err.statusCode || 400).json({ message: err.message });
   }
 };
 
@@ -26,7 +25,6 @@ const deletePost = async (postId) => {
     return postDeleting;
   } catch (err) {
     console.log(err);
-    return res.status(err.statusCode || 400).json({ message: err.message });
   }
 };
 

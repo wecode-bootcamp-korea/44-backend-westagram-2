@@ -9,7 +9,6 @@ try {
   router.delete('/:postId', postController.deletePost);
 } catch (err) {
   console.log(err);
-  return res.status(err.statusCode || 400).json({ message: err.message });
 }
 
 module.exports = {
