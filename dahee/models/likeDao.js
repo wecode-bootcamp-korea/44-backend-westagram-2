@@ -1,8 +1,8 @@
-const dataSource = require('./appDataSource');
+const appDataSource = require('./appDataSource');
 
 const createLike = async (userId, postId) => {
   try {
-    return await dataSource.appDataSource.query(
+    return await appDataSource.query(
       `INSERT INTO likes (
           user_id, 
           post_id

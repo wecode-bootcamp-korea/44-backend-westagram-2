@@ -2,8 +2,11 @@ const express = require('express');
 const userController = require('../controllers/userController');
 
 const router = express.Router();
-router.post('/signup', userController.signUp);
-router.get('/:userId', userController.postsByUser);
+try {
+  router.post('/signup', userController.signUp);
+} catch (err) {
+  console.log(err);
+}
 
 module.exports = {
   router,

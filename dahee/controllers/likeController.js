@@ -10,7 +10,7 @@ const newLike = async (req, res) => {
     res.status(201).json({ message: 'NEW_LIKE_CREATED' });
   } catch (err) {
     console.log(err);
-    return res.status(err.statusCode || 400).json({ messgae: err.message });
+    return res.status(err.statusCode || 500).json({ messgae: err.message });
   }
 };
 

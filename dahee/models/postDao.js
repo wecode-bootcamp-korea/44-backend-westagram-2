@@ -1,8 +1,8 @@
-const dataSource = require('./appDataSource');
+const appDataSource = require('./appDataSource');
 
 const postUpload = async (title, content, userId) => {
   try {
-    return await dataSource.appDataSource.query(
+    return await appDataSource.query(
       `INSERT INTO posts(
                     title,
                     content,
@@ -19,7 +19,7 @@ const postUpload = async (title, content, userId) => {
 
 const allPosts = async () => {
   try {
-    return await dataSource.appDataSource.query(
+    return await appDataSource.query(
       `SELECT
       u.id userId,
       u.profile_image userProfileImage,
@@ -38,7 +38,7 @@ const allPosts = async () => {
 
 const postChange = async (userId, postId, title, content) => {
   try {
-    return await dataSource.appDataSource.query(
+    return await appDataSource.query(
       `UPDATE posts   
         SET
         title = ?,
@@ -54,10 +54,40 @@ const postChange = async (userId, postId, title, content) => {
 };
 
 const postDeleting = async (postId) => {
-  await dataSource.appDataSource.query(
+  await appDataSource.query(
     `DELETE FROM posts
         WHERE posts.id = ${postId}`
   );
+};
+
+const getUserPosts = async (userId) => {
+  try {
+    return await appDataSource.query(
+      `SELECT
+            u.id userId,
+            u.profile_image userProfileImage,
+            pj.postings
+          FROM users u
+          JOIN 
+            (SELECT 
+              user_id, 
+              JSON_ARRAYAGG(
+                JSON_OBJECT(
+                  "postingId", id, 
+                  "postingImageUrl", image_url, 
+                  "postingContent", content
+                  )
+                ) postings
+            FROM posts p
+            GROUP BY id) pj
+          ON u.id = pj.user_id
+          WHERE u.id = ${userId};`
+    );
+  } catch (err) {
+    const error = new Error('INVALID_DATA_INPUT');
+    error.statusCode = 400;
+    throw error;
+  }
 };
 
 module.exports = {
@@ -65,4 +95,5 @@ module.exports = {
   allPosts,
   postChange,
   postDeleting,
+  getUserPosts,
 };

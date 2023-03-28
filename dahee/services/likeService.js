@@ -2,8 +2,7 @@ const likeDao = require('../models/likeDao');
 
 const newLike = async (userId, postId) => {
   try {
-    const createLike = await likeDao.createLike(userId, postId);
-    return createLike;
+    return likeDao.createLike(userId, postId);
   } catch (err) {
     console.log(err);
   }
