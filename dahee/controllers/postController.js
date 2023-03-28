@@ -16,6 +16,17 @@ const newPostUp = async (req, res) => {
   }
 };
 
+const getAllPosts = async (req, res) => {
+  try {
+    const data = await postService.getAllPosts();
+    res.status(200).json({ data });
+  } catch (err) {
+    console.log(err);
+    return res.status(err.statusCode || 500).json({ messgae: err.message });
+  }
+};
+
 module.exports = {
   newPostUp,
+  getAllPosts,
 };

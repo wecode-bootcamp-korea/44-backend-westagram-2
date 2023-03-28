@@ -17,23 +17,7 @@ app.get('/ping', (req, res) => {
   res.status(200).json({ message: 'pong' });
 });
 
-/*app.post('/posts', async (req, res) => {
-  const { title, content, userId } = req.body;
-
-  //에러 핸들링 추가 - status code 잘 쓰는 것도 중요
-
-  const insert = await appDataSource.query(
-    `INSERT INTO posts (
-      title,
-      content,
-      user_id
-    ) VALUES (?, ?, ?)`,
-    [title, content, userId]
-  );
-  res.status(201).json({ message: 'postCreated' });
-});
-
-app.get('/posts', async (req, res) => {
+/*app.get('/posts', async (req, res) => {
   const data = await appDataSource.query(
     `SELECT
       u.id userId,
