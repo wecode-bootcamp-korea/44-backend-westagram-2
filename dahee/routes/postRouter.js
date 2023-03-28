@@ -6,6 +6,7 @@ try {
   router.post('/newpost', postController.newPostUp);
   router.get('', postController.getAllPosts);
   router.patch('/:userId/:postId', postController.updatePost);
+  router.delete('/:postId', postController.deletePost);
 } catch (err) {
   console.log(err);
   return res.status(err.statusCode || 400).json({ message: err.message });

@@ -20,8 +20,19 @@ const updatePost = async (userId, postId, title, content) => {
   }
 };
 
+const deletePost = async (postId) => {
+  try {
+    const postDeleting = await postDao.postDeleting(postId);
+    return postDeleting;
+  } catch (err) {
+    console.log(err);
+    return res.status(err.statusCode || 400).json({ message: err.message });
+  }
+};
+
 module.exports = {
   newPostUp,
   getAllPosts,
   updatePost,
+  deletePost,
 };

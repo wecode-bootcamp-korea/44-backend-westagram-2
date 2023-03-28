@@ -53,8 +53,16 @@ const postChange = async (userId, postId, title, content) => {
   }
 };
 
+const postDeleting = async (postId) => {
+  await dataSource.appDataSource.query(
+    `DELETE FROM posts
+        WHERE posts.id = ${postId}`
+  );
+};
+
 module.exports = {
   postUpload,
   allPosts,
   postChange,
+  postDeleting,
 };
