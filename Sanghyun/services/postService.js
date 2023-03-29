@@ -6,7 +6,7 @@ const createPost = async ({ title, content, userId, postingImageUrl }) => {
   return "postCreated";
 };
 
-const getPostings = async () => {
+const postingList = async () => {
   return postDao.postingList();
 };
 
@@ -18,11 +18,8 @@ const getPostingByUserId = async (userId) => {
   return postDao.postingListByUserId(userId);
 };
 
-const deletePost = async ({ userId, password, postId }) => {
-  const user = await userDao.findMatched({ userId, password });
-  if (user.length === 0) {
-    throw new Error("user not matched");
-  }
+const deletePost = async (postId ) => {
+ 
   const post = await postDao.findMatched(postId);
   if (!post || post.length === 0) {
     throw new Error("postId not matched");
@@ -61,7 +58,7 @@ const patchPost = async ({
 
 module.exports = {
   createPost,
-  getPostings,
+  postingList,
   getPostingByUserId,
   deletePost,
   patchPost,

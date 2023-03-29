@@ -12,7 +12,7 @@ const createDeleteLike = async (req, res) => {
       postId
     });
 
-    res.status(200).json({ message: like });
+    res.status(201).json({ message: like });
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
