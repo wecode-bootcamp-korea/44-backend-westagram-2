@@ -4,6 +4,10 @@ const createUser = async (req, res) => {
   try {
     const { userName, email, profileImage, userPassword } = req.body;
 
+    if (!userName || !email || !profileImage || !userPassword) {
+      return res.status(400).json({ message: "Missing required fields" });
+    }
+
     const pwValidation = new RegExp(
       "^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,20})"
     );
@@ -11,10 +15,6 @@ const createUser = async (req, res) => {
       const err = new Error("password is not valid");
       err.statusCode = 400;
       throw err;
-    }
-
-    if (!userName || !email || !profileImage || !userPassword) {
-      return res.status(400).json({ message: "Missing required fields" });
     }
 
     const message = await userService.createUser({

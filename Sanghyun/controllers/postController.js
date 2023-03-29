@@ -14,7 +14,7 @@ const createPost = async (req, res) => {
       postingImageUrl,
     });
 
-    res.status(200).json({ message: message });
+    res.status(201).json({ message: message });
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
