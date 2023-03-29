@@ -1,11 +1,7 @@
 const appDataSource = require('./appDataSource');
-const bcrypt = require('bcrypt');
-const saltRounds = 12;
 
 const createUser = async (name, email, password, profileImage) => {
   try {
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
-
     return await appDataSource.query(
       `INSERT INTO users(
                   name,
@@ -13,7 +9,7 @@ const createUser = async (name, email, password, profileImage) => {
                   password,
                   profile_image
               ) VALUES (?, ?, ?, ?)`,
-      [name, email, hashedPassword, profileImage]
+      [name, email, password, profileImage]
     );
   } catch (err) {
     const error = new Error('INVALID_DATA_INPUT');
@@ -24,18 +20,16 @@ const createUser = async (name, email, password, profileImage) => {
 
 const verifyUser = async (email) => {
   try {
-    const hashedPassword = await appDataSource
-      .query(
-        `SELECT
-        password
+    const [dataObj] = await appDataSource.query(
+      `SELECT
+        password,
+        id,
+        email
       FROM users
       WHERE email = ?`,
-        [email]
-      )
-      .map((user) => user.password);
-
-    console.log(typeof hashedPassword);
-    return hashedPassword[0];
+      [email]
+    );
+    return dataObj;
   } catch (err) {
     const error = new Error('INVALID_USER');
     error.statusCode = 400;

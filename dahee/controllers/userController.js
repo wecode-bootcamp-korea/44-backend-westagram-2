@@ -1,4 +1,6 @@
 const userService = require('../services/userService');
+const jwt = require('jsonwebtoken');
+const secretKey = process.env.SECRET_KEY;
 
 const signUp = async (req, res) => {
   try {
@@ -24,10 +26,11 @@ const signIn = async (req, res) => {
       return res.status(400).json({ message: 'KEY_ERROR' });
     }
 
-    const verificationResult = await userService.signIn(email, password);
-    console.log(verificationResult);
-    if (verificationResult) {
-      res.status(200).json({ message: 'SIGNIN_SUCCESS' });
+    const userAuth = await userService.signIn(email, password);
+    if (userAuth.result) {
+      const payload = { userId: userAuth.id };
+      const accessToken = jwt.sign(payload, secretKey);
+      res.status(200).json({ accessToken: accessToken });
     } else {
       res.status(400).json({ message: 'INVALID_USER' });
     }
