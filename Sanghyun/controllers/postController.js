@@ -23,7 +23,6 @@ const createPost = async (req, res) => {
 const getPostings = async (req, res, next) => {
   try {
     const postings = await postService.getPostings();
-    console.log(postings);
     res.status(200).json({ data: postings });
   } catch (err) {
     next(err);
@@ -65,20 +64,28 @@ const deletePost = async (req, res) => {
 
 const patchPost = async (req, res) => {
   try {
-    const { userId, password, postId, title, content, postingImageUrl } = req.body;
-    if (!userId || !password || !postId || !title || !content || !postingImageUrl) {
+    const { userId, password, postId, title, content, postingImageUrl } =
+      req.body;
+    if (
+      !userId ||
+      !password ||
+      !postId ||
+      !title ||
+      !content ||
+      !postingImageUrl
+    ) {
       return res.status(400).json({ message: "Missing required fields" });
     }
 
     const result = await postService.patchPost({
-        userId, 
-        password, 
-        postId, 
-        title, 
-        content, 
-        postingImageUrl 
-    })
-    console.log(result);
+      userId,
+      password,
+      postId,
+      title,
+      content,
+      postingImageUrl,
+    });
+
     res.status(200).json({ message: "patched done", data: result });
   } catch (err) {
     res.status(400).json({ message: err.message });
@@ -90,5 +97,5 @@ module.exports = {
   getPostings,
   getPostingByUserId,
   deletePost,
-  patchPost
+  patchPost,
 };

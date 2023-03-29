@@ -21,7 +21,7 @@ const getPostingByUserId = async (userId) => {
 };
 
 const deletePost = async ({ userId, password, postId }) => {
-  const user = await userDao.findMatched({userId, password});
+  const user = await userDao.findMatched({ userId, password });
   if (user.length === 0) {
     throw new Error("user not matched");
   }
@@ -30,7 +30,7 @@ const deletePost = async ({ userId, password, postId }) => {
     throw new Error("postId not matched");
   }
 
-  await postDao.deletePost( postId );
+  await postDao.deletePost(postId);
   return "postDeleted";
 };
 
@@ -40,25 +40,32 @@ const patchPost = async ({
   postId,
   title,
   content,
-  postingImageUrl
+  postingImageUrl,
 }) => {
-    const user = await userDao.findMatched({userId, password});
-    if (user.length === 0) {
-      throw new Error("user not matched");
-    }
-    const post = await postDao.findMatched(postId);
-    if (post.length === 0) {
-      throw new Error("postId not matched");
-    }
-    await postDao.patchPost({
-        postId,
-        title,
-        content,
-        postingImageUrl})
+  const user = await userDao.findMatched({ userId, password });
+  if (user.length === 0) {
+    throw new Error("user not matched");
+  }
+  const post = await postDao.findMatched(postId);
+  if (post.length === 0) {
+    throw new Error("postId not matched");
+  }
+  await postDao.patchPost({
+    postId,
+    title,
+    content,
+    postingImageUrl,
+  });
 
-    const patched = await postDao.postingPatched(postId)    
-    console.log(patched)    
-    return patched[0];    
+  const patched = await postDao.postingPatched(postId);
+  console.log(patched);
+  return patched[0];
 };
 
-module.exports = { createPost, getPostings, getPostingByUserId, deletePost, patchPost };
+module.exports = {
+  createPost,
+  getPostings,
+  getPostingByUserId,
+  deletePost,
+  patchPost,
+};

@@ -20,5 +20,5 @@ const createDeleteLike = async (req, res) => {
 };
 
 module.exports = {
-  createDeleteLike
+  createDeleteLike,
 };
