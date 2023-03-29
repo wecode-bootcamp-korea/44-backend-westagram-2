@@ -29,7 +29,7 @@ const postslist = async (req, res) => {
 
 const modify = async (req, res) => {
   try {
-    const { content, postId } = req.body;
+    const { content, postId } = req.params;
 
     if (!postId || !content) {
       return res.status(400).json({ message: "KEY_ERROR" });
@@ -45,14 +45,14 @@ const modify = async (req, res) => {
 
 const postsDelete = async (req, res) => {
   try {
-    const { postId } = req.body;
+    const { postId } = req.params;
 
     if (!postId) {
       return res.status(400).json({ message: "KEY_ERROR" });
     }
 
     await postService.postsDelete(postId);
-    res.status(200).json({ message: "DELETE_COMPLETE" });
+    res.status(204).send();
   } catch (err) {
     console.log(err);
     return res.status(err.statusCode || 500).json({ message: err.message });

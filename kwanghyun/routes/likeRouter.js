@@ -3,7 +3,7 @@ const likeController = require("../controllers/likeControllers");
 
 const router = express.Router();
 
-router.post("/like", likeController.likes);
+router.post("", likeController.likes);
 
 module.exports = {
   router,

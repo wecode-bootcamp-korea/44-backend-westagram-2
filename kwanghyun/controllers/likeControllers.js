@@ -9,7 +9,7 @@ const likes = async (req, res) => {
     }
 
     await likeService.likes(userId, postId);
-    res.status(200).json({ message: "LIKE_CHECK" });
+    res.status(201).json({ message: "LIKE_CHECK" });
   } catch (err) {
     console.log(err);
     return res.status(err.statusCode || 500).json({ message: err.messasge });

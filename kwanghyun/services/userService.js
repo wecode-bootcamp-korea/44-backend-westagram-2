@@ -13,9 +13,7 @@ const signUp = async (name, email, password, profileImage) => {
 };
 
 const posts = async (userId) => {
-  const posts = await userDao.posts(userId);
-
-  return posts;
+  return userDao.posts(userId);
 };
 
 module.exports = {
