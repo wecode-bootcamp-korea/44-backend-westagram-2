@@ -1,4 +1,5 @@
 const userDao = require('../models/userDao');
+const bcrypt = require('bcrypt');
 
 const signUp = async (name, email, password, profileImage) => {
   const pwValidaiton = new RegExp(
@@ -14,7 +15,8 @@ const signUp = async (name, email, password, profileImage) => {
 };
 
 const signIn = async (email, password) => {
-  return userDao.verifyUser(email, password);
+  const hashedPassword = await userDao.verifyUser(email);
+  return bcrypt.compare(password, hashedPassword);
 };
 
 module.exports = {

@@ -24,8 +24,13 @@ const signIn = async (req, res) => {
       return res.status(400).json({ message: 'KEY_ERROR' });
     }
 
-    await userService.signIn(email, password);
-    res.stauts(200).json({ message: 'SIGNIN_SUCCESS' });
+    const verificationResult = await userService.signIn(email, password);
+    console.log(verificationResult);
+    if (verificationResult) {
+      res.status(200).json({ message: 'SIGNIN_SUCCESS' });
+    } else {
+      res.status(400).json({ message: 'INVALID_USER' });
+    }
   } catch (err) {
     console.log(err);
     return res.status(err.statusCode || 500).json({ message: err.message });

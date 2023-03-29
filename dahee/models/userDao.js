@@ -22,6 +22,28 @@ const createUser = async (name, email, password, profileImage) => {
   }
 };
 
+const verifyUser = async (email) => {
+  try {
+    const hashedPassword = await appDataSource
+      .query(
+        `SELECT
+        password
+      FROM users
+      WHERE email = ?`,
+        [email]
+      )
+      .map((user) => user.password);
+
+    console.log(typeof hashedPassword);
+    return hashedPassword[0];
+  } catch (err) {
+    const error = new Error('INVALID_USER');
+    error.statusCode = 400;
+    throw error;
+  }
+};
+
 module.exports = {
   createUser,
+  verifyUser,
 };
