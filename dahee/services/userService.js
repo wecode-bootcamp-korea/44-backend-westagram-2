@@ -13,6 +13,11 @@ const signUp = async (name, email, password, profileImage) => {
   return userDao.createUser(name, email, password, profileImage);
 };
 
+const signIn = async (email, password) => {
+  return userDao.verifyUser(email, password);
+};
+
 module.exports = {
   signUp,
+  signIn,
 };
