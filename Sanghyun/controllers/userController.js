@@ -1,3 +1,4 @@
+const { passwordEmailMatched } = require("../models/userDao");
 const userService = require("../services/userService");
 
 const createUser = async (req, res) => {
@@ -30,6 +31,24 @@ const createUser = async (req, res) => {
   }
 };
 
+const signIn = async (req, res) => {
+  try{
+    const {email, userPassword} = req.body;
+    console.log('input: '+ email)
+    console.log('input: '+ userPassword)
+    if (!email || !userPassword) {
+      return res.status(400).json({ message: "Missing required fields" });
+    }
+
+    const result = await userService.signIn(email, userPassword)
+
+    res.status(200).json({ accessToken: result});
+  }catch (err){
+    res.status(400).json({ message: err.message });
+  }
+}
+
 module.exports = {
   createUser,
+  signIn
 };
