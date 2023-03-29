@@ -29,7 +29,7 @@ const postslist = async (req, res) => {
 
 const modify = async (req, res) => {
   try {
-    const { content, postId } = req.params;
+    const { content, postId } = req.body;
 
     if (!postId || !content) {
       return res.status(400).json({ message: "KEY_ERROR" });
