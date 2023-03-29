@@ -54,12 +54,14 @@ app.get("/user/posts", async (req, res) => {
     `SELECT
               users.id as userId,
               users.profile_image as userProfileImage,
-              (SELECT JSON_ARRAYAGG(
+              (
+                SELECT  JSON_ARRAYAGG(
                 JSON_OBJECT(
                   "postingId", posts.id, 
                   "postingContent", posts.content
                   )
-                )) as postings
+                )
+                ) as postings
               FROM posts
               INNER JOIN users
               ON users.id = posts.user_id
@@ -100,6 +102,54 @@ app.post("/users", async (req, res) => {
     [name, email, profileImage, password]
   );
   res.status(201).json({ message: "userCreated" });
+});
+app.post("/likes", async (req, res) => {
+  const { user_id, post_id } = req.body;
+  await appDataSource.query(
+    `INSERT INTO likes(
+        user_id,
+        post_id
+      ) VALUES (?, ?)
+      `,
+    [user_id, post_id]
+  );
+  res.status(201).json({ message: "likeCreated" });
+});
+
+app.patch("/user/post", async (req, res) => {
+  const { postId, contentUpdate } = req.body;
+  await appDataSource.query(
+    `UPDATE
+          posts 
+          SET content=?
+          WHERE posts.user_id=?
+          `,
+    [contentUpdate, postId]
+  );
+  const data = await appDataSource.query(
+    `SELECT 
+            users.id as userId,
+            users.profile_image as userProfileImage,
+            posts.user_id as postingId,
+            posts.content as postingContent
+            FROM users 
+            LEFT JOIN posts 
+            ON users.id = posts.user_id
+            `
+  );
+  res.status(200).json({ data: data });
+});
+
+app.delete("/posts", async (req, res) => {
+  const { contentDelete } = req.body;
+  await appDataSource.query(
+    `DELETE 
+            FROM posts
+            WHERE posts.id = ?
+    `,
+    [contentDelete]
+  );
+  res.status(200).json({ message: "postingDeleted" });
 });
 
 const PORT = process.env.PORT;
