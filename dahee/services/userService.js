@@ -1,5 +1,4 @@
 const userDao = require('../models/userDao');
-//데이터 비교 변형은 전부 service에서 함
 const bcrypt = require('bcrypt');
 const saltRounds = 12;
 
