@@ -1,6 +1,6 @@
 const appDataSource = require("./myDataSources");
 
-const createUser = async ({ userName, email, profileImage, userPassword }) => {
+const createUser = async ({ userName, email, profileImage, hashedPassword }) => {
   await appDataSource.query(
     `INSERT INTO users(
         user_name ,
@@ -9,7 +9,7 @@ const createUser = async ({ userName, email, profileImage, userPassword }) => {
         user_password     
       ) VALUES (?, ?, ?, ?);
        `,
-    [userName, email, profileImage, userPassword]
+    [userName, email, profileImage, hashedPassword]
   );
 };
 
