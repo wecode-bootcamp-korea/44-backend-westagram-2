@@ -3,7 +3,8 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
-const { DataSource } = require('typeorm');
+const routes = require('./routes');
+const appDataSource = require('./models/appDataSource');
 
 const app = express();
 const PORT = process.env.PORT;
@@ -11,15 +12,7 @@ const PORT = process.env.PORT;
 app.use(cors());
 app.use(express.json());
 app.use(morgan('combined'));
-
-const appDataSource = new DataSource({
-  type: process.env.DB_CONNECTION,
-  host: process.env.DB_HOST,
-  port: process.env.DB_PORT,
-  username: process.env.DB_USERNAME,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_DATABASE,
-});
+app.use(routes);
 
 appDataSource
   .initialize()
@@ -34,20 +27,12 @@ app.get('/ping', (req, res) => {
   res.status(200).json({ message: 'pong' });
 });
 
-app.post('/users', async (req, res) => {
-  const { name, email, password, profileImage } = req.body;
-  await appDataSource.query(
-    `INSERT INTO users (
-      name,
-      email,
-      password,
-      profile_image
-    ) VALUES (?, ?, ?, ?)`,
-    [name, email, password, profileImage]
-  );
-  res.status(201).json({ message: 'userCreated' });
-});
+const start = async () => {
+  try {
+    app.listen(PORT, () => console.log(`Server is listening on ${PORT}`));
+  } catch (err) {
+    console.log(err);
+  }
+};
 
-app.listen(PORT, () => {
-  console.log(`Server is listening on port ${PORT}`);
-});
+start();
