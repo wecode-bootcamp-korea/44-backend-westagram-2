@@ -20,9 +20,9 @@ const createPost = async (req, res) => {
   }
 };
 
-const getPostings = async (req, res, next) => {
+const postingList = async (req, res, next) => {
   try {
-    const postings = await postService.getPostings();
+    const postings = await postService.postingList();
     res.status(200).json({ data: postings });
   } catch (err) {
     next(err);
@@ -45,16 +45,14 @@ const getPostingByUserId = async (req, res, next) => {
 
 const deletePost = async (req, res) => {
   try {
-    const { userId, password, postId } = req.body;
-    if (!userId || !password || !postId) {
+    const {postId} = req.params;
+    if (!postId) {
       return res.status(400).json({ message: "Missing required fields" });
     }
 
-    const result = await postService.deletePost({
-      userId,
-      password,
+    const result = await postService.deletePost(
       postId,
-    });
+    );
 
     res.status(200).json({ message: result });
   } catch (err) {
@@ -94,7 +92,7 @@ const patchPost = async (req, res) => {
 
 module.exports = {
   createPost,
-  getPostings,
+  postingList,
   getPostingByUserId,
   deletePost,
   patchPost,
