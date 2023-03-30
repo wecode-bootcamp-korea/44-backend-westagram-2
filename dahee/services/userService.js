@@ -1,7 +1,6 @@
 const userDao = require('../models/userDao');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const saltRounds = 12;
 const secretKey = process.env.SECRET_KEY;
 
 const signUp = async (name, email, password, profileImage) => {
@@ -14,23 +13,26 @@ const signUp = async (name, email, password, profileImage) => {
     err.statusCode = 400;
     throw err;
   }
+
+  const saltRounds = 12;
   const hashedPassword = await bcrypt.hash(password, saltRounds);
   return userDao.createUser(name, email, hashedPassword, profileImage);
 };
 
 const signIn = async (email, password) => {
   try {
-    const userObj = await userDao.verifyUser(email);
-    const authResult = await bcrypt.compare(password, userObj.password);
-    if (authResult) {
-      const payload = { userId: userObj.id };
-      const token = jwt.sign(payload, secretKey);
-      return token;
-    } else {
+    const user = await userDao.verifyUserByEmail(email);
+    const authResult = await bcrypt.compare(password, user.password);
+
+    if (!authResult) {
       const error = new Error('INVALID_USER');
-      error.statusCode = 400;
+      error.statusCode = 401;
       throw error;
     }
+
+    const payload = { userId: user.id };
+    const token = jwt.sign(payload, secretKey);
+    return token;
   } catch (err) {
     const error = new Error('INVALID_USER');
     error.statusCode = 400;

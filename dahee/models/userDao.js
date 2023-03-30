@@ -18,7 +18,7 @@ const createUser = async (name, email, password, profileImage) => {
   }
 };
 
-const verifyUser = async (email) => {
+const verifyUserByEmail = async (email) => {
   try {
     const [dataObj] = await appDataSource.query(
       `SELECT
@@ -39,5 +39,5 @@ const verifyUser = async (email) => {
 
 module.exports = {
   createUser,
-  verifyUser,
+  verifyUserByEmail,
 };

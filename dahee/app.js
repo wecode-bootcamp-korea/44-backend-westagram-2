@@ -5,7 +5,6 @@ const cors = require('cors');
 const morgan = require('morgan');
 const routes = require('./routes');
 const appDataSource = require('./models/appDataSource');
-const loginReq = require('./utils/auth');
 
 const app = express();
 const PORT = process.env.PORT;
@@ -14,7 +13,6 @@ app.use(cors());
 app.use(express.json());
 app.use(morgan('combined'));
 app.use(routes);
-app.use(loginReq);
 
 appDataSource
   .initialize()
