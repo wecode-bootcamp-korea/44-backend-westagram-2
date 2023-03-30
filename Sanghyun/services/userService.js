@@ -33,8 +33,7 @@ const signIn = async (email, userPassword) =>{
   }
   
   const payLoad ={
-    userId: user.id,
-    email: user.email
+    userId: user.id
   }
 
   const secretKey = process.env.JWT_SECRET_KEY; 

@@ -46,12 +46,12 @@ const emailMatched = async(email) =>{
   return user;
 }
 
-
 const emailPasswordMatched = async({email, password}) =>{
-  return await appDataSource.query(
+  const result =  await appDataSource.query(
     `SELECT * FROM users WHERE email = ? AND user_password = ?`,
     [email, password]
   )
+  return result[0];
 }
 
 const passwordEmailMatched = async(email) => {
