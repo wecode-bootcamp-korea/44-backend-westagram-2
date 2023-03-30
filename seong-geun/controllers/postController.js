@@ -2,26 +2,13 @@ const postService = require("../services/postService");
 
 const Posts = async (req, res) => {
   try {
-    const { postingId, title, postingImageUrl, postingContent, userId } =
-      req.body;
+    const { title, postingImageUrl, postingContent, userId } = req.body;
 
-    if (
-      !postingId ||
-      !title ||
-      !postingImageUrl ||
-      !postingContent ||
-      !userId
-    ) {
+    if (!title || !postingImageUrl || !postingContent || !userId) {
       return res.status(400).json({ message: "KEY_ERROR" });
     }
 
-    await postService.Posts(
-      postingId,
-      title,
-      postingImageUrl,
-      postingContent,
-      userId
-    );
+    await postService.Posts(title, postingImageUrl, postingContent, userId);
     return res.status(201).json({
       message: "POSTING_SUCCESS",
     });
