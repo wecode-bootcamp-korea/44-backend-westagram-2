@@ -8,8 +8,12 @@ const signUp = async (name, email, password, profileImage) => {
     '^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,20})'
   );
 
-  if (!pwValidaiton.test(password)) {
-    const err = new Error('PASSWORD_IS_NOT_VALID');
+  const emailValidation = new RegExp(
+    /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
+  );
+
+  if (!pwValidaiton.test(password) || !emailValidation.test(email)) {
+    const err = new Error('PASSWORD_OR_EMAIL_IS_NOT_VALID');
     err.statusCode = 400;
     throw err;
   }
