@@ -28,13 +28,6 @@ const getUserById = async (userId) => {
   return user[0];
 };
 
-const findMatched = async ({ userId, password }) => {
-  return await appDataSource.query(
-    `SELECT * FROM users WHERE id = ? AND user_password = ?`,
-    [userId, password]
-  );
-};
-
 const emailMatched = async(email) =>{
   const result = await appDataSource.query(
     `SELECT * FROM users WHERE email = ?`,
@@ -62,23 +55,9 @@ const emailPasswordMatched = async({email, password}) =>{
   return result[0];
 }
 
-const passwordEmailMatched = async(email) => {
-  const result = await appDataSource.query(
-    `SELECT user_password FROM users WHERE email = ?`,
-    [email]
-  );
-  if (result.length === 0) {
-    throw new Error("user not found");
-  }
-  return result[0].user_password;
-}
-
-
 module.exports = {
   createUser,
   getUserById,
-  findMatched,
   emailMatched,
   emailPasswordMatched,
-  passwordEmailMatched
 };

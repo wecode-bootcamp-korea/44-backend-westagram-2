@@ -16,7 +16,7 @@ const createUser = async (req, res) => {
       err.statusCode = 400;
       throw err;
     }
-
+    
     const message = await userService.createUser({
       userName,
       email,
