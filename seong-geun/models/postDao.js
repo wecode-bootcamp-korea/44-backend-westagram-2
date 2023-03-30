@@ -1,15 +1,5 @@
 const appDataSource = require("./appDataSource");
 
-appDataSource
-  .initialize()
-  .then(() => {
-    console.log("Data Source has been initialized!");
-  })
-  .catch((err) => {
-    console.error("Error occurred during Data Source initialization", err);
-    appDataSource.destroy();
-  });
-
 // 게시글 등록하기
 const createPost = async (
   postingId,

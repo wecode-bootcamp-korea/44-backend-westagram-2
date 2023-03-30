@@ -1,6 +1,6 @@
 const postService = require("../services/postService");
 
-const Posts = async (req, res) => {
+const createPosts = async (req, res) => {
   try {
     const { postingId, title, postingImageUrl, postingContent, userId } =
       req.body;
@@ -96,7 +96,7 @@ const deletePosts = async (req, res) => {
 };
 
 module.exports = {
-  Posts,
+  createPosts,
   getPosts,
   getUposts,
   patchPosts,
