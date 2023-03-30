@@ -22,9 +22,16 @@ const signUp = async (name, email, password, profileImage) => {
 const signIn = async (email, password) => {
   try {
     const user = await userDao.verifyUserByEmail(email);
-    const authResult = await bcrypt.compare(password, user.password);
 
-    if (!authResult) {
+    if (!user) {
+      const error = new Error('INVALID_USER');
+      err.statusCode = 401;
+      throw err;
+    }
+
+    const isMatched = await bcrypt.compare(password, user.password);
+
+    if (!isMatched) {
       const error = new Error('INVALID_USER');
       error.statusCode = 401;
       throw error;
