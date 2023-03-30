@@ -1,4 +1,3 @@
-const { passwordEmailMatched } = require("../models/userDao");
 const userService = require("../services/userService");
 
 const createUser = async (req, res) => {
