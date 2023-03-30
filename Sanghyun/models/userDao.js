@@ -1,6 +1,14 @@
 const appDataSource = require("./myDataSources");
 
 const createUser = async ({ userName, email, profileImage, hashedPassword }) => {
+  
+  const sameUser = await appDataSource.query('SELECT * FROM users WHERE email = ?', 
+  [email]);
+
+  if(sameUser.length !== 0){
+    throw new Error("email alreay exists, not valid ")
+  }
+  
   await appDataSource.query(
     `INSERT INTO users(
         user_name ,
@@ -14,7 +22,7 @@ const createUser = async ({ userName, email, profileImage, hashedPassword }) => 
 };
 
 const getUserById = async (userId) => {
-  const user = await appDataSource.query("SELECT * FROM users WHERE id = ?", [
+  const user = await appDataSource.query('SELECT * FROM users WHERE id = ?', [
     userId,
   ]);
   return user[0];

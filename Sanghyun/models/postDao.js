@@ -14,7 +14,7 @@ const createPost = async ({ title, content, userId, postingImageUrl }) => {
 };
 
 const postingList = async () => {
-  const postings = await appDataSource.query(
+  return await appDataSource.query(
     `SELECT  
           u.id AS userId,
           u.profile_image AS userProfileImage,
@@ -27,8 +27,6 @@ const postingList = async () => {
           ON p.user_id = u.id
           `
   );
-
-  return postings;
 };
 
 const postingListByUserId = async (userId) => {

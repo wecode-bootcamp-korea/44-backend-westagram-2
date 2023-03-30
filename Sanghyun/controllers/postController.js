@@ -1,5 +1,4 @@
 const postService = require("../services/postService");
-const jwt = require('jsonwebtoken');
 
 const createPost = async (req, res) => {
   try {
@@ -8,7 +7,7 @@ const createPost = async (req, res) => {
       return res.status(400).json({ message: "Missing required fields" });
     }
 
-    const userId = req.user
+    const userId = req.userId
     const message = await postService.createPost({
       title,
       content,
@@ -64,12 +63,13 @@ const deletePost = async (req, res) => {
 
 const patchPost = async (req, res) => {
   try {
-    const { userId, password, postId, title, content, postingImageUrl } =
+    const {  title, content, postingImageUrl } =
       req.body;
+      const userId = req.userId;
+      console.log(userId)
+      const {postId} = req.params;
+      console.log(postId)
     if (
-      !userId ||
-      !password ||
-      !postId ||
       !title ||
       !content ||
       !postingImageUrl
@@ -79,7 +79,6 @@ const patchPost = async (req, res) => {
 
     const result = await postService.patchPost({
       userId,
-      password,
       postId,
       title,
       content,

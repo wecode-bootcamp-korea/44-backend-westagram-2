@@ -31,13 +31,12 @@ const deletePost = async (postId ) => {
 
 const patchPost = async ({
   userId,
-  password,
   postId,
   title,
   content,
   postingImageUrl,
 }) => {
-  const user = await userDao.findMatched({ userId, password });
+  const user = await userDao.getUserById(userId)
   if (user.length === 0) {
     throw new Error("user not matched");
   }
