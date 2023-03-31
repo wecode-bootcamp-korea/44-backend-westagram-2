@@ -21,7 +21,6 @@ const postingList = async () => {
           p.id AS postingId,
           p.posting_image_url AS postingImageUrl,
           p.content AS postingContent  
-    
           FROM users AS u
           JOIN posts AS p
           ON p.user_id = u.id
