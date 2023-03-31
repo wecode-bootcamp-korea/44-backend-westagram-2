@@ -16,6 +16,7 @@ const createUser = async (userProfileImage, userName, age, email, password) => {
       [userProfileImage, userName, age, email, password]
     );
   } catch (err) {
+    console.log(err);
     const error = new Error("INVALID_DATA_INPUT");
     error.statusCode = 500;
     throw error;

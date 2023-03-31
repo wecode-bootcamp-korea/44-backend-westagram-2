@@ -1,6 +1,6 @@
 const userService = require("../services/likeService");
 
-const Like = async (req, res) => {
+const createLike = async (req, res) => {
   try {
     const { userId, postId } = req.body;
 
@@ -19,5 +19,5 @@ const Like = async (req, res) => {
 };
 
 module.exports = {
-  Like,
+  createLike,
 };
