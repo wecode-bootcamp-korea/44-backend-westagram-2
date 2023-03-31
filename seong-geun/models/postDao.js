@@ -1,24 +1,17 @@
 const appDataSource = require("./appDataSource");
 
 // 게시글 등록하기
-const createPost = async (
-  postingId,
-  title,
-  postingImageUrl,
-  postingContent,
-  userId
-) => {
+const createPost = async (title, postingImageUrl, postingContent, userId) => {
   try {
     return await appDataSource.query(
       `INSERT INTO posts(
-		    id,
 		    title,
         posting_image_url,
 		    posting_content,
         user_id
-		) VALUES (?, ?, ?, ?, ?);
+		) VALUES ( ?, ?, ?, ?);
 		`,
-      [postingId, title, postingImageUrl, postingContent, userId]
+      [title, postingImageUrl, postingContent, userId]
     );
   } catch (err) {
     const error = new Error("INVALID_DATA_INPUT");
