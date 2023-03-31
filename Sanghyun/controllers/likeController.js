@@ -2,7 +2,8 @@ const likeService = require("../services/likeService");
 
 const createDeleteLike = async (req, res) => {
   try {
-    const { userId, postId } = req.body;
+    const userId = req.userId;
+    const {postId} = req.params;
     if (!userId || !postId) {
       return res.status(400).json({ message: "Missing required fields" });
     }

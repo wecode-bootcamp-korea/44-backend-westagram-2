@@ -7,7 +7,7 @@ const createPost = async ({ title, content, userId, postingImageUrl }) => {
 };
 
 const postingList = async () => {
-  return postDao.postingList();
+  return await postDao.postingList();
 };
 
 const getPostingByUserId = async (userId) => {
@@ -15,7 +15,7 @@ const getPostingByUserId = async (userId) => {
   if (!user) {
     throw new Error("User not found");
   }
-  return postDao.postingListByUserId(userId);
+  return await postDao.postingListByUserId(userId);
 };
 
 const deletePost = async (postId ) => {
@@ -31,13 +31,12 @@ const deletePost = async (postId ) => {
 
 const patchPost = async ({
   userId,
-  password,
   postId,
   title,
   content,
   postingImageUrl,
 }) => {
-  const user = await userDao.findMatched({ userId, password });
+  const user = await userDao.getUserById(userId)
   if (user.length === 0) {
     throw new Error("user not matched");
   }

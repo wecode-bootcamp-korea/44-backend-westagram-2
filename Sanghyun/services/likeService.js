@@ -5,7 +5,7 @@ const likeDao = require("../models/likeDao");
 const createDeleteLike = async ({ userId, postId }) => {
   
   const like = await likeDao.findMatched({ userId, postId });
-
+  
   if (like.length === 0) {
     await likeDao.createLike({ userId, postId });
     return "likesCreated";
