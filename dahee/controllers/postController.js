@@ -2,13 +2,12 @@ const postService = require('../services/postService');
 
 const newPostUp = async (req, res) => {
   try {
-    const { title, content, userId } = req.body;
+    const { title, content } = req.body;
 
-    if (!title || !content || !userId) {
+    if (!title || !content) {
       return res.status(400).json({ message: 'KEY_ERROR' });
     }
-
-    await postService.newPostUp(title, content, userId);
+    await postService.newPostUp(title, content, req.userId);
     res.status(201).json({ message: 'NEWPOST_UPLOADED' });
   } catch (err) {
     console.log(err);

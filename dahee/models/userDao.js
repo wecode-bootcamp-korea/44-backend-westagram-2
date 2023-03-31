@@ -18,6 +18,26 @@ const createUser = async (name, email, password, profileImage) => {
   }
 };
 
+const verifyUserByEmail = async (email) => {
+  try {
+    const [dataObj] = await appDataSource.query(
+      `SELECT
+        password,
+        id,
+        email
+      FROM users
+      WHERE email = ?`,
+      [email]
+    );
+    return dataObj;
+  } catch (err) {
+    const error = new Error('INVALID_USER');
+    error.statusCode = 400;
+    throw error;
+  }
+};
+
 module.exports = {
   createUser,
+  verifyUserByEmail,
 };
