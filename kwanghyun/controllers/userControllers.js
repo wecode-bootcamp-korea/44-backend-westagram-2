@@ -4,7 +4,7 @@ const signUp = async (req, res) => {
   try {
     const { name, email, password, profileImage } = req.body;
 
-    if (!name || !password || !email || !profileImage) {
+    if (!name || !password || !email) {
       return res.status(400).json({ message: "KEY ERROR" });
     }
 
@@ -32,7 +32,19 @@ const posts = async (req, res) => {
   }
 };
 
+const signIn = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const token = await userService.signIn(email, password);
+    res.status(201).json({ accessToken: token });
+  } catch (err) {
+    console.log(err);
+    return res.status(err.statusCode || 500).json({ message: err.message });
+  }
+};
+
 module.exports = {
   signUp,
   posts,
+  signIn,
 };

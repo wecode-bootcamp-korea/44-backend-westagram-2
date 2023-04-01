@@ -14,6 +14,7 @@ const createUser = async (name, email, password, profileImage) => {
     );
   } catch (err) {
     const error = new Error("INVALID_DATA_INPUT");
+    console.log(err);
     error.statusCode = 500;
     throw error;
   }
@@ -47,7 +48,28 @@ const posts = async (userId) => {
   }
 };
 
+const signIn = async (email) => {
+  try {
+    const [users] = await appDataSource.query(
+      `SELECT
+      id,
+      email,
+      password
+      FROM users
+      WHERE users.email = ?
+      `,
+      [email]
+    );
+    return users;
+  } catch (err) {
+    const error = new Error("INVALID_DATA_INPUT");
+    error.statusCode = 500;
+    throw error; // 에러를 던지면 서비스로 감.
+  }
+};
+
 module.exports = {
   createUser,
   posts,
+  signIn,
 };

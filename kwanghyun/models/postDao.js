@@ -60,10 +60,10 @@ const postsDelete = async (postId) => {
     return await appDataSource.query(
       `DELETE
       FROM posts
-      WHERE posts.id = ?;
+      WHERE posts.id = ?; 
       `,
       [postId]
-    );
+    ); // WHERE id IN (?) AND user_id = ? 이런식으로도 작성가능 이런식으로 작성하면 (?)값으로 여러개를 줄 수 있음
   } catch (err) {
     const error = new Error("CAN'T_DELETE");
     console.log(err);

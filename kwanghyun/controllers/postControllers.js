@@ -45,7 +45,7 @@ const modify = async (req, res) => {
 
 const postsDelete = async (req, res) => {
   try {
-    const { postId } = req.params;
+    const { postId } = req.params; // 바디가 없는 메서드를 쓸때(get, delete) params 또는 query 작성
 
     if (!postId) {
       return res.status(400).json({ message: "KEY_ERROR" });
